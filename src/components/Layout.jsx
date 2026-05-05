@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/dialogue', icon: '💬', label: 'Dialogue élève' },
   { to: '/bibliotheque', icon: '📚', label: 'Bibliothèque' },
   { to: '/progression', icon: '🎯', label: 'Ma progression' },
+  { to: '/references', icon: '🔬', label: 'Références' },
 ]
 
 export default function Layout({ children }) {

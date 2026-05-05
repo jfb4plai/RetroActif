@@ -12,6 +12,7 @@ import Module4_Bibliotheque from './pages/Module4_Bibliotheque'
 import Module5_Progression  from './pages/Module5_Progression'
 import Module6_Constructeur from './pages/Module6_Constructeur'
 import ResetPassword       from './pages/ResetPassword'
+import References          from './pages/References'
 
 function AppRoutes() {
   const { user, profile, loading } = useAuth()
@@ -63,6 +64,7 @@ function AppRoutes() {
         <Route path="/dialogue"     element={<Module3_Dialogue />} />
         <Route path="/bibliotheque" element={<Module4_Bibliotheque />} />
         <Route path="/progression"  element={<Module5_Progression />} />
+        <Route path="/references"   element={<References />} />
         <Route path="*"             element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Layout>
