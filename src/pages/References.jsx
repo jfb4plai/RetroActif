@@ -12,6 +12,7 @@ const SECTIONS = [
     icon: '🏛️',
     module: null,
     titre: 'Fondements — Pourquoi la rétroaction ?',
+    enclair: 'Vous le savez déjà intuitivement : dire "bien" ou mettre 12/20 ne fait pas progresser un élève. La recherche le confirme — et va plus loin. Ce qui fait la différence, c\'est un retour qui dit précisément quoi améliorer et comment. Pas un jugement sur l\'élève. Pas une note. Une information utilisable.',
     intro: 'La rétroaction n\'est pas un simple retour correctif. La recherche montre qu\'elle est un levier central de la régulation des apprentissages, à condition d\'être orientée vers la tâche et d\'ouvrir une action concrète pour l\'élève.',
     refs: [
       {
@@ -50,6 +51,7 @@ const SECTIONS = [
     icon: '✨',
     module: 'Constructeur',
     titre: 'Constructeur — Écrire une rétroaction efficace',
+    enclair: 'Écrire une bonne rétroaction, ça s\'apprend — et ça prend du temps. Le constructeur vous guide pour ne rien oublier d\'essentiel : un point fort ancré dans le travail (pas "bravo"), ce qui manque précisément, et une action concrète que l\'élève peut faire seul. La recherche montre que c\'est cette structure — pas la longueur du commentaire — qui change quelque chose.',
     intro: 'Un feedback efficace ne se résume pas à signaler l\'erreur. La recherche identifie des caractéristiques précises : ancrage dans la tâche, identification d\'un point fort réel, indication de ce qui manque et comment y remédier, critère de réussite vérifiable.',
     refs: [
       {
@@ -88,6 +90,7 @@ const SECTIONS = [
     icon: '🔀',
     module: 'Logigramme',
     titre: 'Logigramme — Vérifier la qualité d\'une rétroaction',
+    enclair: 'Vous avez déjà écrit une rétroaction, mais vous n\'êtes pas sûr qu\'elle tient la route ? Le logigramme pose les mêmes questions que la recherche : est-ce que ça parle de la tâche ou de l\'élève ? Est-ce qu\'il y a quelque chose de positif de réel ? Est-ce que l\'élève sait exactement quoi faire ensuite ? Trois questions. Beaucoup de commentaires n\'y répondent pas.',
     intro: 'Le logigramme s\'appuie sur les critères de qualité identifiés par la recherche : orientation tâche (pas personne), présence d\'un point fort, indication du « quoi améliorer » et du « comment », critère de réussite et modalité de suivi.',
     refs: [
       {
@@ -126,6 +129,7 @@ const SECTIONS = [
     icon: '📊',
     module: 'Suivi & Bulletins',
     titre: 'Suivi & Bulletins — Cohérence dans le temps',
+    enclair: 'Une rétroaction écrite une fois et jamais relue ne sert à rien. La recherche montre que c\'est la répétition et la cohérence qui produisent des effets. Le module suivi vous permet de retrouver ce que vous avez dit à un élève il y a deux mois — pour ne pas vous contredire, pour montrer à l\'élève qu\'il progresse, et pour écrire un commentaire de bulletin qui raconte quelque chose de vrai.',
     intro: 'La rétroaction isolée a peu d\'effet. C\'est la cohérence dans le temps et le suivi des actions proposées qui génèrent des progrès mesurables. Les commentaires de bulletin doivent s\'ancrer dans l\'historique réel de l\'élève.',
     refs: [
       {
@@ -165,6 +169,7 @@ const SECTIONS = [
     icon: '💬',
     module: 'Dialogue élève',
     titre: 'Dialogue élève — La rétroaction comme conversation',
+    enclair: 'Vous avez écrit un commentaire soigné. L\'élève l\'a lu deux secondes et n\'en a rien fait. Ça vous parle ? La recherche explique pourquoi : un feedback ne devient utile que quand l\'élève peut le travailler — le reformuler, poser une question, dire ce qu\'il a compris. Le dialogue structuré, même 5 minutes en tête-à-tête, multiplie l\'impact de ce que vous avez écrit.',
     intro: 'La rétroaction n\'est pas un monologue de l\'enseignant. La recherche montre que c\'est dans le dialogue — quand l\'élève peut répondre, questionner, reformuler — que le feedback devient véritablement activable.',
     refs: [
       {
@@ -203,6 +208,7 @@ const SECTIONS = [
     icon: '🎯',
     module: 'Ma progression',
     titre: 'Progression — Développer sa propre pratique',
+    enclair: 'Donner du feedback, ça s\'apprend comme n\'importe quelle compétence professionnelle. Personne ne naît avec. La recherche montre que les enseignants qui s\'autoévaluent régulièrement sur leurs pratiques — pas pour se juger, mais pour identifier une chose à améliorer — progressent plus vite. C\'est exactement ce que fait le module progression.',
     intro: 'L\'enseignant aussi s\'autoévalue. Les modules de progression s\'appuient sur la recherche montrant que l\'autorégulation et la métacognition sont des leviers autant pour les apprenants que pour les professionnels de l\'enseignement.',
     refs: [
       {
@@ -318,10 +324,23 @@ export default function References() {
             {/* Contenu */}
             {ouvert === section.id && (
               <div className="border-t border-gray-100 p-4 space-y-4">
-                {/* Intro */}
-                <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 leading-relaxed">
-                  {section.intro}
-                </p>
+                {/* En clair — pour les enseignants pressés */}
+                <div className="bg-brand-50 border border-brand-100 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-brand-600 uppercase tracking-wider mb-1">
+                    En clair pour l'enseignant
+                  </div>
+                  <p className="text-sm text-gray-700 leading-relaxed">{section.enclair}</p>
+                </div>
+
+                {/* Intro scientifique */}
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    Ce que dit la recherche
+                  </div>
+                  <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 leading-relaxed">
+                    {section.intro}
+                  </p>
+                </div>
 
                 {/* Références */}
                 <div className="space-y-3">
