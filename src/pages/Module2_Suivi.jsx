@@ -43,6 +43,7 @@ export default function Module2_Suivi() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState('')
+  const [visibleCount, setVisibleCount] = useState(30)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -123,10 +124,16 @@ export default function Module2_Suivi() {
             </div>
           ) : (
             <div className="space-y-2">
-              {filtered.map(r => (
+              {filtered.slice(0, visibleCount).map(r => (
                 <RetroCard key={r.id} r={r} selected={selected?.id === r.id}
                   onClick={() => setSelected(r)} onUpdate={load} />
               ))}
+              {filtered.length > visibleCount && (
+                <button className="w-full py-2 text-sm text-brand-600 hover:underline"
+                  onClick={() => setVisibleCount(v => v + 30)}>
+                  Voir plus ({filtered.length - visibleCount} restantes)
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -330,12 +337,17 @@ function BulletinGenerator({ retroactions, profile }) {
 
       setBulletinTexte(text)
 
-      // Détection de doublon heuristique (similarité > 60%)
+      // Détection de doublon — compare uniquement les mots significatifs (>= 4 chars)
+      // pour éviter les faux positifs dus aux articles/prépositions communs
       if (bulletinPrecedent) {
-        const wordsPrev = new Set(bulletinPrecedent.toLowerCase().split(/\s+/))
-        const wordsNew = text.toLowerCase().split(/\s+/)
-        const overlap = wordsNew.filter(w => wordsPrev.has(w)).length / wordsNew.length
-        if (overlap > 0.6) setDoublonAlerte(true)
+        const stopWords = new Set(['avec','dans','pour','cette','aussi','mais','donc','tout','plus','bien','très','être','avoir','peut','sont','nous','vous','leur','même','dont','lors','comme','sous','entre','vers','sans','chez','lors','après'])
+        const significant = w => w.length >= 4 && !stopWords.has(w)
+        const wordsPrev = new Set(bulletinPrecedent.toLowerCase().split(/\s+/).filter(significant))
+        const wordsNew = text.toLowerCase().split(/\s+/).filter(significant)
+        if (wordsNew.length > 0) {
+          const overlap = wordsNew.filter(w => wordsPrev.has(w)).length / wordsNew.length
+          if (overlap > 0.6) setDoublonAlerte(true)
+        }
       }
     } catch(e) {
       setError(e.message)

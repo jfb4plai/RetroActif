@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 800,
+        max_tokens: action === 'bulletin' ? 1200 : action === 'ameliorer' ? 600 : 800,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       }),
@@ -45,6 +45,9 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const err = await response.json()
+      if (response.status === 429) {
+        return res.status(429).json({ error: 'Quota atteint — réessayez dans 1 minute.' })
+      }
       return res.status(500).json({ error: err.error?.message ?? 'Erreur API Anthropic' })
     }
 

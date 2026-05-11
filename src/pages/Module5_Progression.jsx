@@ -70,7 +70,7 @@ export default function Module5_Progression() {
     const r = retros ?? []
     if (r.length > 0) {
       const avecSuivi = r.filter(x => x.suivi_prevu).length
-      const avecCritere = r.filter(x => x.texte_final?.includes('Critère')).length
+      const avecCritere = r.filter(x => x.texte_final?.toLowerCase().includes('critère')).length
       const modes = {}
       r.forEach(x => { modes[x.mode_construction] = (modes[x.mode_construction] ?? 0) + 1 })
 

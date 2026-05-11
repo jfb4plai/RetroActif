@@ -135,6 +135,7 @@ export default function Module1_Atelier() {
   const [history, setHistory] = useState([])
   const [retroText, setRetroText] = useState('')
   const [ctx, setCtx] = useState({ niveau: '', type_enseignement: '', matiere: '', type_retroaction: 'production', eleve_code: '' })
+  const [matiereSelect, setMatiereSelect] = useState('')
   const [saving, setSaving] = useState(false)
 
   const node = NODES[nodeKey]
@@ -191,10 +192,19 @@ export default function Module1_Atelier() {
               <option value="">Niveau...</option>
               {NIVEAUX.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
             </select>
-            <select className="input text-sm" value={ctx.matiere} onChange={e => setCtx(p => ({...p, matiere: e.target.value}))}>
+            <select className="input text-sm" value={matiereSelect}
+              onChange={e => {
+                setMatiereSelect(e.target.value)
+                if (e.target.value !== 'Autre') setCtx(p => ({...p, matiere: e.target.value}))
+                else setCtx(p => ({...p, matiere: ''}))
+              }}>
               <option value="">Matière...</option>
               {MATIERES.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
+            {matiereSelect === 'Autre' && (
+              <input className="input text-sm" placeholder="Précisez la matière"
+                onChange={e => setCtx(p => ({...p, matiere: e.target.value}))} />
+            )}
             <input className="input text-sm" placeholder="Code élève" value={ctx.eleve_code}
               onChange={e => setCtx(p => ({...p, eleve_code: e.target.value}))} />
           </div>

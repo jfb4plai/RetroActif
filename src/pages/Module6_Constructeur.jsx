@@ -93,6 +93,7 @@ function ModeDebutant({ profile, navigate }) {
   const [error, setError] = useState('')
 
   function update(k, v) { setCtx(p => ({ ...p, [k]: v })) }
+  const [matiereSelectD, setMatiereSelectD] = useState(profile?.matiere ?? '')
 
   async function generate() {
     setGenerating(true)
@@ -180,10 +181,18 @@ function ModeDebutant({ profile, navigate }) {
             </div>
             <div>
               <label className="label">Matière</label>
-              <select className="input" value={ctx.matiere} onChange={e => update('matiere', e.target.value)}>
+              <select className="input" value={matiereSelectD}
+                onChange={e => {
+                  setMatiereSelectD(e.target.value)
+                  update('matiere', e.target.value !== 'Autre' ? e.target.value : '')
+                }}>
                 <option value="">Choisir...</option>
                 {MATIERES.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
+              {matiereSelectD === 'Autre' && (
+                <input className="input mt-2" placeholder="Précisez la matière"
+                  onChange={e => update('matiere', e.target.value)} />
+              )}
             </div>
             <div>
               <label className="label">Type de rétroaction</label>
@@ -432,6 +441,7 @@ function ModeIntermediaire({ profile, navigate }) {
 
   function upCtx(k, v) { setCtx(p => ({ ...p, [k]: v })) }
   function upSeg(k, v) { setSegments(p => ({ ...p, [k]: v })) }
+  const [matiereSelectI, setMatiereSelectI] = useState(profile?.matiere ?? '')
 
   async function fillTemplate() {
     if (!ctx.points_forts && !ctx.difficultes) return
@@ -482,10 +492,18 @@ function ModeIntermediaire({ profile, navigate }) {
             <option value="">Niveau...</option>
             {NIVEAUX.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
           </select>
-          <select className="input text-sm" value={ctx.matiere} onChange={e => upCtx('matiere', e.target.value)}>
+          <select className="input text-sm" value={matiereSelectI}
+            onChange={e => {
+              setMatiereSelectI(e.target.value)
+              upCtx('matiere', e.target.value !== 'Autre' ? e.target.value : '')
+            }}>
             <option value="">Matière...</option>
             {MATIERES.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
+          {matiereSelectI === 'Autre' && (
+            <input className="input text-sm" placeholder="Précisez..."
+              onChange={e => upCtx('matiere', e.target.value)} />
+          )}
           <select className="input text-sm" value={ctx.type_retroaction} onChange={e => upCtx('type_retroaction', e.target.value)}>
             {TYPES_RETROACTION.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
           </select>
@@ -573,6 +591,7 @@ function ModeExpert({ profile, navigate }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
+  const [matiereSelectE, setMatiereSelectE] = useState(profile?.matiere ?? '')
   const score = CHECKLIST.filter(c => checks[c.id]).length
   const allGreen = score === CHECKLIST.length
 
@@ -621,10 +640,18 @@ function ModeExpert({ profile, navigate }) {
                 <option value="">Niveau...</option>
                 {NIVEAUX.map(n => <option key={n.value} value={n.value}>{n.label}</option>)}
               </select>
-              <select className="input text-sm" value={ctx.matiere} onChange={e => setCtx(p => ({...p, matiere: e.target.value}))}>
+              <select className="input text-sm" value={matiereSelectE}
+                onChange={e => {
+                  setMatiereSelectE(e.target.value)
+                  setCtx(p => ({...p, matiere: e.target.value !== 'Autre' ? e.target.value : ''}))
+                }}>
                 <option value="">Matière...</option>
                 {MATIERES.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
+              {matiereSelectE === 'Autre' && (
+                <input className="input text-sm" placeholder="Précisez..."
+                  onChange={e => setCtx(p => ({...p, matiere: e.target.value}))} />
+              )}
             </div>
             <div className="grid grid-cols-2 gap-2">
               <select className="input text-sm" value={ctx.type_retroaction} onChange={e => setCtx(p => ({...p, type_retroaction: e.target.value}))}>
