@@ -9,9 +9,31 @@
  * - pas de preamble, directement dans la matière
  */
 
+// Rate limiter simple — par IP, par instance serverless
+const rateLimitMap = new Map()
+const RATE_LIMIT = 10
+const RATE_WINDOW = 60 * 1000
+
+function checkRateLimit(ip) {
+  const now = Date.now()
+  const entry = rateLimitMap.get(ip)
+  if (!entry || now - entry.start > RATE_WINDOW) {
+    rateLimitMap.set(ip, { count: 1, start: now })
+    return true
+  }
+  if (entry.count >= RATE_LIMIT) return false
+  entry.count++
+  return true
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Méthode non autorisée' })
+  }
+
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() ?? 'unknown'
+  if (!checkRateLimit(ip)) {
+    return res.status(429).json({ error: 'Trop de requêtes — réessayez dans 1 minute.' })
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY

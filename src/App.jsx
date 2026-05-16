@@ -13,6 +13,9 @@ import Module5_Progression  from './pages/Module5_Progression'
 import Module6_Constructeur from './pages/Module6_Constructeur'
 import ResetPassword       from './pages/ResetPassword'
 import References          from './pages/References'
+import BouclePage          from './pages/BouclePage'
+import PeerPage            from './pages/PeerPage'
+import Module7_Pairs       from './pages/Module7_Pairs'
 
 function AppRoutes() {
   const { user, profile, loading } = useAuth()
@@ -28,6 +31,15 @@ function AppRoutes() {
         </div>
       </div>
     )
+  }
+
+  // Route publique — accessible sans connexion (lien élève "Fermer la boucle")
+  // Vérifiée en premier pour éviter la redirection vers /login
+  if (window.location.pathname.startsWith('/boucle/')) {
+    return <Routes><Route path="/boucle/:token" element={<BouclePage />} /></Routes>
+  }
+  if (window.location.pathname.startsWith('/peer/')) {
+    return <Routes><Route path="/peer/:token" element={<PeerPage />} /></Routes>
   }
 
   // Non connecté → login (reset-password accessible sans auth car Supabase gère la session via le token URL)
@@ -46,6 +58,7 @@ function AppRoutes() {
     return (
       <Routes>
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/boucle/:token" element={<BouclePage />} />
         <Route path="*" element={<Navigate to="/onboarding" replace />} />
       </Routes>
     )
@@ -65,6 +78,9 @@ function AppRoutes() {
         <Route path="/bibliotheque" element={<Module4_Bibliotheque />} />
         <Route path="/progression"  element={<Module5_Progression />} />
         <Route path="/references"   element={<References />} />
+        <Route path="/boucle/:token" element={<BouclePage />} />
+        <Route path="/peer/:token"   element={<PeerPage />} />
+        <Route path="/pairs"         element={<Module7_Pairs />} />
         <Route path="*"             element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Layout>

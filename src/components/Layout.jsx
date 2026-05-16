@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/dialogue', icon: '💬', label: 'Dialogue élève' },
   { to: '/bibliotheque', icon: '📚', label: 'Bibliothèque' },
   { to: '/progression', icon: '🎯', label: 'Ma progression' },
+  { to: '/pairs', icon: '🤝', label: 'Feedback pairs' },
   { to: '/references', icon: '🔬', label: 'Références' },
 ]
 
