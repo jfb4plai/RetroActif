@@ -10,8 +10,8 @@
  *              hal-04621117, dumas-05324645
  */
 
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import {
@@ -35,6 +35,24 @@ async function callGenerate(action, context) {
 export default function Module6_Constructeur() {
   const { profile } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [prefill, setPrefill] = useState(null)
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const handoffId = params.get('handoff')
+    if (!handoffId) return
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return
+      fetch(`/api/handoff-read?id=${handoffId}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data) setPrefill(data) })
+        .catch(() => {})
+    })
+  }, [location.search])
 
   // Mode selon profil enseignant (modifiable dans la session)
   const [mode, setMode] = useState(profile?.niveau_maitrise ?? 'debutant')
@@ -60,9 +78,9 @@ export default function Module6_Constructeur() {
         </div>
       </div>
 
-      {mode === 'debutant'    && <ModeDebutant profile={profile} navigate={navigate} />}
-      {mode === 'intermediaire' && <ModeIntermediaire profile={profile} navigate={navigate} />}
-      {mode === 'expert'      && <ModeExpert profile={profile} navigate={navigate} />}
+      {mode === 'debutant'      && <ModeDebutant profile={profile} navigate={navigate} prefill={prefill} />}
+      {mode === 'intermediaire' && <ModeIntermediaire profile={profile} navigate={navigate} prefill={prefill} />}
+      {mode === 'expert'        && <ModeExpert profile={profile} navigate={navigate} prefill={prefill} />}
     </div>
   )
 }
@@ -70,18 +88,18 @@ export default function Module6_Constructeur() {
 // ════════════════════════════════════════════════════════════
 // MODE DÉBUTANT — conversation guidée + 80/20
 // ════════════════════════════════════════════════════════════
-function ModeDebutant({ profile, navigate }) {
-  const [step, setStep] = useState(1)
+function ModeDebutant({ profile, navigate, prefill }) {
+  const [step, setStep] = useState(prefill ? 3 : 1)
   const [ctx, setCtx] = useState({
-    niveau: profile?.niveau_enseignement ?? '',
+    niveau: prefill?.niveau || profile?.niveau_enseignement || '',
     type_enseignement: profile?.type_enseignement ?? '',
-    matiere: profile?.matiere ?? '',
+    matiere: prefill?.matiere || profile?.matiere || '',
     type_retroaction: 'production',
-    eleve_code: '',
+    eleve_code: prefill?.eleve_code || '',
     production_type: '',
-    points_forts: '',
-    difficultes: '',
-    infos_complementaires: '',
+    points_forts: prefill?.points_forts || '',
+    difficultes: prefill?.difficultes || '',
+    infos_complementaires: prefill?.infos_complementaires || '',
     suivi_prevu: false,
     modalite_suivi: '',
   })
@@ -140,6 +158,13 @@ function ModeDebutant({ profile, navigate }) {
 
   return (
     <div className="space-y-4">
+      {prefill && (
+        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
+          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
+          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
+          Vérifiez et ajustez avant de générer.
+        </div>
+      )}
       {/* Barre de progression */}
       <div className="card py-3 px-4">
         <div className="flex items-center justify-between">
@@ -416,16 +441,16 @@ function ModeDebutant({ profile, navigate }) {
 // ════════════════════════════════════════════════════════════
 // MODE INTERMÉDIAIRE — template semi-rempli
 // ════════════════════════════════════════════════════════════
-function ModeIntermediaire({ profile, navigate }) {
+function ModeIntermediaire({ profile, navigate, prefill }) {
   const [ctx, setCtx] = useState({
-    niveau: profile?.niveau_enseignement ?? '',
+    niveau: prefill?.niveau || profile?.niveau_enseignement || '',
     type_enseignement: profile?.type_enseignement ?? '',
-    matiere: profile?.matiere ?? '',
+    matiere: prefill?.matiere || profile?.matiere || '',
     type_retroaction: 'production',
-    eleve_code: '',
+    eleve_code: prefill?.eleve_code || '',
     production_type: '',
-    points_forts: '',
-    difficultes: '',
+    points_forts: prefill?.points_forts || '',
+    difficultes: prefill?.difficultes || '',
     suivi_prevu: false,
   })
   const [segments, setSegments] = useState({
@@ -484,6 +509,13 @@ function ModeIntermediaire({ profile, navigate }) {
 
   return (
     <div className="space-y-4">
+      {prefill && (
+        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
+          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
+          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
+          Vérifiez et ajustez avant de générer.
+        </div>
+      )}
       {/* Contexte rapide */}
       <div className="card space-y-3">
         <h2 className="font-semibold text-gray-800">Contexte</h2>
@@ -575,13 +607,13 @@ const CHECKLIST = [
   { id: 'suivi', label: 'Suivi planifié (révision, dialogue...)' },
 ]
 
-function ModeExpert({ profile, navigate }) {
+function ModeExpert({ profile, navigate, prefill }) {
   const [ctx, setCtx] = useState({
-    niveau: profile?.niveau_enseignement ?? '',
+    niveau: prefill?.niveau || profile?.niveau_enseignement || '',
     type_enseignement: profile?.type_enseignement ?? '',
-    matiere: profile?.matiere ?? '',
+    matiere: prefill?.matiere || profile?.matiere || '',
     type_retroaction: 'production',
-    eleve_code: '',
+    eleve_code: prefill?.eleve_code || '',
     suivi_prevu: false,
   })
   const [texte, setTexte] = useState('')
@@ -631,6 +663,13 @@ function ModeExpert({ profile, navigate }) {
 
   return (
     <div className="space-y-4">
+      {prefill && (
+        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
+          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
+          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
+          Vérifiez et ajustez avant de générer.
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         {/* Colonne gauche — saisie */}
         <div className="space-y-3">
