@@ -14,7 +14,8 @@ export default function Login() {
   const { signIn, signUp } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const nextParam = new URLSearchParams(location.search).get('next') || '/dashboard'
+  const raw = new URLSearchParams(location.search).get('next') || ''
+  const nextParam = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/dashboard'
 
   async function handleSubmit(e) {
     e.preventDefault()
