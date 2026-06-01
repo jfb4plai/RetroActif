@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import LogoPlai from '../components/LogoPlai'
@@ -13,6 +13,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const { signIn, signUp } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const nextParam = new URLSearchParams(location.search).get('next') || '/dashboard'
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -23,7 +25,7 @@ export default function Login() {
     if (mode === 'login') {
       const { error } = await signIn(email, password)
       if (error) setError('Email ou mot de passe incorrect.')
-      else navigate('/dashboard')
+      else navigate(nextParam)
 
     } else if (mode === 'register') {
       const { error } = await signUp(email, password)
