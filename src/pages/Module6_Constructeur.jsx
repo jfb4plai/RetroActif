@@ -111,7 +111,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
   const [error, setError] = useState('')
 
   function update(k, v) { setCtx(p => ({ ...p, [k]: v })) }
-  const [matiereSelectD, setMatiereSelectD] = useState(profile?.matiere ?? '')
+  const [matiereSelectD, setMatiereSelectD] = useState(prefill?.matiere || profile?.matiere || '')
 
   async function generate() {
     setGenerating(true)
@@ -466,7 +466,7 @@ function ModeIntermediaire({ profile, navigate, prefill }) {
 
   function upCtx(k, v) { setCtx(p => ({ ...p, [k]: v })) }
   function upSeg(k, v) { setSegments(p => ({ ...p, [k]: v })) }
-  const [matiereSelectI, setMatiereSelectI] = useState(profile?.matiere ?? '')
+  const [matiereSelectI, setMatiereSelectI] = useState(prefill?.matiere || profile?.matiere || '')
 
   async function fillTemplate() {
     if (!ctx.points_forts && !ctx.difficultes) return
@@ -623,7 +623,7 @@ function ModeExpert({ profile, navigate, prefill }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  const [matiereSelectE, setMatiereSelectE] = useState(profile?.matiere ?? '')
+  const [matiereSelectE, setMatiereSelectE] = useState(prefill?.matiere || profile?.matiere || '')
   const score = CHECKLIST.filter(c => checks[c.id]).length
   const allGreen = score === CHECKLIST.length
 
