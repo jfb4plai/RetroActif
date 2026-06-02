@@ -48,6 +48,9 @@ create table if not exists public.retroactions (
   texte_final          text,    -- version finale (généré + personnalisé)
   texte_original       text,    -- version initiale avant amélioration (mode expert)
 
+  -- Diagnostic (Brousseau)
+  type_obstacle        text,    -- épistémologique | didactique | ontogénique | linguistique | null
+
   -- Suivi
   suivi_prevu          boolean default false,
   modalite_suivi       text,
@@ -67,6 +70,7 @@ create table if not exists public.retroactions (
 create index if not exists retroactions_user_id_idx on public.retroactions(user_id);
 create index if not exists retroactions_eleve_code_idx on public.retroactions(eleve_code);
 create index if not exists retroactions_created_at_idx on public.retroactions(created_at desc);
+create index if not exists retroactions_type_obstacle_idx on public.retroactions(type_obstacle);
 
 -- RLS
 alter table public.retroactions enable row level security;
@@ -149,3 +153,13 @@ create trigger update_profiles_updated_at
 create trigger update_retroactions_updated_at
   before update on public.retroactions
   for each row execute function public.update_updated_at();
+
+-- ══════════════════════════════════════════════════════════════
+-- MIGRATION — Taxonomie des obstacles (Brousseau)
+-- À exécuter si la table retroactions existe déjà en production
+-- ══════════════════════════════════════════════════════════════
+alter table public.retroactions
+  add column if not exists type_obstacle text;
+
+create index if not exists retroactions_type_obstacle_idx
+  on public.retroactions(type_obstacle);

@@ -119,6 +119,17 @@ RÈGLES D'ÉCRITURE ABSOLUES :
 - L'élève qui lit cette rétroaction doit savoir exactement QUOI faire et COMMENT.`
 
   if (action === 'retroaction') {
+    // Guidance Brousseau : oriente l'action concrète selon le type d'obstacle identifié
+    const obstacleGuidance = context.type_obstacle ? (() => {
+      const guides = {
+        'épistémologique': "L'erreur vient d'un savoir antérieur correct dans un autre contexte qui bloque ici. L'ACTION CONCRÈTE doit d'abord déconstruire cette représentation (montrer pourquoi elle ne fonctionne plus), puis reconstruire sur des bases explicites. Ne pas ignorer l'ancien savoir — le nommer, puis montrer sa limite.",
+        'didactique': "L'élève croit faire ce qu'on lui demande mais a mal lu le contrat didactique. L'ACTION CONCRÈTE doit reformuler explicitement ce qu'on attendait, rendre visible le malentendu sans culpabiliser, et donner un exemple de ce que la tâche attend réellement.",
+        'ontogénique': "L'outil mental requis n'est pas encore disponible à ce stade. L'ACTION CONCRÈTE doit adapter le niveau de la tâche, proposer un étayage (manipulable, représentation intermédiaire, exemple concret) ou différencier la modalité — sans forcer l'abstraction prématurée.",
+        'linguistique': "La langue d'enseignement crée une interférence : l'élève maîtrise le concept dans sa L1 mais bloque dans la langue cible. L'ACTION CONCRÈTE doit dissocier la compétence conceptuelle de la compétence linguistique — valider le concept, travailler la terminologie séparément.",
+      }
+      return `\nType d'obstacle identifié (Brousseau) : ${context.type_obstacle}\n${guides[context.type_obstacle] ?? ''}\n`
+    })() : ''
+
     return `Tu es un conseiller pédagogique FWB spécialisé en évaluation formative. Tu rédiges des rétroactions activables pour des enseignants.
 
 Contexte d'enseignement :
@@ -126,7 +137,7 @@ Contexte d'enseignement :
 - Type : ${typeLabel}
 - Matière : ${context.matiere ?? 'non précisée'}
 - Type de rétroaction : ${context.type_retroaction ?? 'non précisé'}
-
+${obstacleGuidance}
 Une rétroaction activable contient toujours :
 1. Un point fort observé (centré sur la tâche / le processus)
 2. Un axe d'amélioration précis (pas "améliore", mais QUOI améliorer exactement)
@@ -190,6 +201,7 @@ ${context.points_forts ?? 'Non précisés'}
 Difficultés ou axes d'amélioration observés :
 ${context.difficultes ?? 'Non précisées'}
 
+${context.type_obstacle ? `Type d'obstacle identifié (Brousseau) : ${context.type_obstacle}\nOriente l'action concrète selon la guidance fournie dans le system prompt.` : ''}
 ${context.infos_complementaires ? `Informations complémentaires :\n${context.infos_complementaires}` : ''}
 
 Génère la rétroaction directement, sans en-tête.`

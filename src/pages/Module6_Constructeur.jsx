@@ -16,7 +16,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import {
   NIVEAUX, TYPES_ENSEIGNEMENT, TYPES_RETROACTION,
-  NIVEAUX_MAITRISE, MATIERES
+  NIVEAUX_MAITRISE, MATIERES, TYPES_OBSTACLE
 } from '../lib/constants'
 
 // ── Appel API generate ─────────────────────────────────────
@@ -86,6 +86,60 @@ export default function Module6_Constructeur() {
 }
 
 // ════════════════════════════════════════════════════════════
+// COMPOSANT PARTAGÉ — Sélecteur de type d'obstacle (Brousseau)
+// Optionnel dans les 3 modes. Affine l'action concrète générée.
+// ════════════════════════════════════════════════════════════
+function ObstacleSelector({ value, onChange }) {
+  return (
+    <div>
+      <label className="label">
+        Type d'obstacle identifié
+        <span className="text-gray-400 font-normal ml-1">(optionnel — affine l'action concrète générée)</span>
+      </label>
+      <div className="space-y-1.5 mt-1">
+        {TYPES_OBSTACLE.map(o => (
+          <label key={o.value}
+            className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
+              value === o.value
+                ? 'border-brand-400 bg-brand-50'
+                : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+            }`}>
+            <input
+              type="radio"
+              name="type_obstacle"
+              value={o.value}
+              checked={value === o.value}
+              onChange={() => onChange(o.value)}
+              className="mt-0.5 accent-brand-600 shrink-0"
+            />
+            <div className="min-w-0">
+              <p className={`text-sm font-medium ${value === o.value ? 'text-brand-700' : 'text-gray-700'}`}>
+                {o.label}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">{o.description}</p>
+              <p className="text-xs text-gray-400 italic mt-0.5">{o.exemples}</p>
+            </div>
+          </label>
+        ))}
+        <label className={`flex items-center gap-3 p-2.5 rounded-lg border cursor-pointer transition-all ${
+          value === '' ? 'border-gray-300 bg-white' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+        }`}>
+          <input
+            type="radio"
+            name="type_obstacle"
+            value=""
+            checked={value === ''}
+            onChange={() => onChange('')}
+            className="accent-gray-400 shrink-0"
+          />
+          <span className="text-sm text-gray-500">Je ne sais pas / ne s'applique pas</span>
+        </label>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
 // MODE DÉBUTANT — conversation guidée + 80/20
 // ════════════════════════════════════════════════════════════
 function ModeDebutant({ profile, navigate, prefill }) {
@@ -100,6 +154,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
     points_forts: prefill?.points_forts || '',
     difficultes: prefill?.difficultes || '',
     infos_complementaires: prefill?.infos_complementaires || '',
+    type_obstacle: '',
     suivi_prevu: false,
     modalite_suivi: '',
   })
@@ -312,6 +367,8 @@ function ModeDebutant({ profile, navigate, prefill }) {
               value={ctx.difficultes} onChange={e => update('difficultes', e.target.value)} />
           </div>
 
+          <ObstacleSelector value={ctx.type_obstacle} onChange={v => update('type_obstacle', v)} />
+
           <div>
             <label className="label">Informations supplémentaires (optionnel)</label>
             <textarea className="input resize-y" rows={2}
@@ -451,6 +508,7 @@ function ModeIntermediaire({ profile, navigate, prefill }) {
     production_type: '',
     points_forts: prefill?.points_forts || '',
     difficultes: prefill?.difficultes || '',
+    type_obstacle: '',
     suivi_prevu: false,
   })
   const [segments, setSegments] = useState({
@@ -552,6 +610,7 @@ function ModeIntermediaire({ profile, navigate, prefill }) {
           <textarea className="input text-sm resize-none" rows={2} placeholder="Difficultés observées..."
             value={ctx.difficultes} onChange={e => upCtx('difficultes', e.target.value)} />
         </div>
+        <ObstacleSelector value={ctx.type_obstacle} onChange={v => upCtx('type_obstacle', v)} />
         <button className="btn-accent text-sm" onClick={fillTemplate} disabled={generating}>
           {generating ? 'Génération...' : '✨ Pré-remplir le template'}
         </button>
@@ -614,6 +673,7 @@ function ModeExpert({ profile, navigate, prefill }) {
     matiere: prefill?.matiere || profile?.matiere || '',
     type_retroaction: 'production',
     eleve_code: prefill?.eleve_code || '',
+    type_obstacle: '',
     suivi_prevu: false,
   })
   const [texte, setTexte] = useState('')
@@ -699,6 +759,10 @@ function ModeExpert({ profile, navigate, prefill }) {
               <input className="input text-sm" placeholder="Code élève"
                 value={ctx.eleve_code} onChange={e => setCtx(p => ({...p, eleve_code: e.target.value}))} />
             </div>
+          </div>
+
+          <div className="card">
+            <ObstacleSelector value={ctx.type_obstacle} onChange={v => setCtx(p => ({...p, type_obstacle: v}))} />
           </div>
 
           <div className="card">
