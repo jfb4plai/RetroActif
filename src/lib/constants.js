@@ -93,13 +93,13 @@ export const TYPES_OBSTACLE = [
     value: 'épistémologique',
     label: 'Épistémologique',
     description: "Un savoir antérieur — vrai dans un autre contexte — bloque l'apprentissage nouveau. L'élève généralise à tort.",
-    exemples: 'Maths : « la multiplication rend plus grand ». Français : « le sujet fait l'action ». Sciences : « le froid entre dans la maison ».',
+    exemples: "Maths : « la multiplication rend plus grand ». Français : « le sujet fait l'action ». Sciences : « le froid entre dans la maison ».",
   },
   {
     value: 'didactique',
     label: 'Didactique',
     description: "L'élève croit faire ce qu'on demande, mais a mal lu le contrat didactique. Il applique une règle — pas la bonne.",
-    exemples: 'Résumer en recopiant. Calculer chiffre par chiffre sans retenue. Dessiner ce qu'il imagine, pas ce qu'il observe.',
+    exemples: "Résumer en recopiant. Calculer chiffre par chiffre sans retenue. Dessiner ce qu'il imagine, pas ce qu'il observe.",
   },
   {
     value: 'ontogénique',
