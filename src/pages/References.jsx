@@ -264,23 +264,23 @@ export default function References() {
       {/* Compteurs */}
       <div className="grid grid-cols-3 gap-4">
         <div className="card py-4 text-center">
-          <div className="text-2xl font-bold text-brand-600">{totalRiss + totalInter}</div>
+          <div className="text-2xl font-bold text-jfb-rose">{totalRiss + totalInter}</div>
           <div className="text-xs text-gray-500 mt-1">Références totales</div>
         </div>
         <div className="card py-4 text-center">
-          <div className="text-2xl font-bold text-brand-600">{totalRiss}</div>
+          <div className="text-2xl font-bold text-jfb-rose">{totalRiss}</div>
           <div className="text-xs text-gray-500 mt-1">
             <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-brand-500 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-jfb-rose inline-block" />
               Validées RISS
             </span>
           </div>
         </div>
         <div className="card py-4 text-center">
-          <div className="text-2xl font-bold text-accent-500">{totalInter}</div>
+          <div className="text-2xl font-bold text-jfb-gris">{totalInter}</div>
           <div className="text-xs text-gray-500 mt-1">
             <span className="inline-flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-accent-500 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-jfb-gris inline-block" />
               Internationales
             </span>
           </div>
@@ -290,11 +290,11 @@ export default function References() {
       {/* Légende */}
       <div className="card bg-gray-50 py-3 px-4 flex flex-wrap gap-4 text-xs text-gray-600">
         <span className="flex items-center gap-2">
-          <span className="bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-medium">RISS</span>
+          <span className="bg-jfb-beige text-jfb-rose px-2 py-0.5 rounded-full font-medium">RISS</span>
           Article validé dans le corpus RISS (522 627 articles francophones)
         </span>
         <span className="flex items-center gap-2">
-          <span className="bg-accent-100 text-accent-600 px-2 py-0.5 rounded-full font-medium">International</span>
+          <span className="bg-jfb-subtil text-jfb-gris px-2 py-0.5 rounded-full font-medium">International</span>
           Référence réelle, hors corpus RISS — vérifiée manuellement
         </span>
       </div>
@@ -312,7 +312,7 @@ export default function References() {
               <div className="flex-1">
                 <div className="font-semibold text-gray-800 text-sm">{section.titre}</div>
                 {section.module && (
-                  <div className="text-xs text-brand-600 mt-0.5">Module : {section.module}</div>
+                  <div className="text-xs text-jfb-rose mt-0.5">Module : {section.module}</div>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -325,8 +325,8 @@ export default function References() {
             {ouvert === section.id && (
               <div className="border-t border-gray-100 p-4 space-y-4">
                 {/* En clair — pour les enseignants pressés */}
-                <div className="bg-brand-50 border border-brand-100 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-brand-600 uppercase tracking-wider mb-1">
+                <div className="bg-jfb-beige border border-jfb-bordure rounded-lg p-4">
+                  <div className="text-xs font-semibold text-jfb-rose uppercase tracking-wider mb-1">
                     En clair pour l'enseignant
                   </div>
                   <p className="text-sm text-gray-700 leading-relaxed">{section.enclair}</p>
@@ -347,14 +347,14 @@ export default function References() {
                   {section.refs.map((ref, i) => (
                     <div key={i} className={`rounded-lg p-4 border ${
                       ref.riss
-                        ? 'bg-brand-50 border-brand-100'
-                        : 'bg-accent-100/40 border-orange-100'
+                        ? 'bg-jfb-beige border-jfb-bordure'
+                        : 'bg-jfb-subtil border-gray-200'
                     }`}>
                       <div className="flex items-start gap-3">
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 mt-0.5 ${
                           ref.riss
-                            ? 'bg-brand-100 text-brand-700'
-                            : 'bg-accent-100 text-accent-600'
+                            ? 'bg-jfb-beige text-jfb-rose'
+                            : 'bg-jfb-subtil text-jfb-gris'
                         }`}>
                           {ref.riss ? 'RISS' : 'International'}
                         </span>
@@ -371,7 +371,7 @@ export default function References() {
                             {ref.extrait}
                           </blockquote>
                           {!ref.riss && (
-                            <div className="mt-2 text-xs text-accent-600 italic">
+                            <div className="mt-2 text-xs text-jfb-gris italic">
                               Réel, hors corpus RISS — vérification manuelle
                             </div>
                           )}

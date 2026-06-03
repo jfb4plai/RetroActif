@@ -43,7 +43,7 @@ export default function Dashboard() {
       icon: '✨',
       title: 'Nouvelle rétroaction',
       desc: 'Construire avec assistance IA',
-      color: 'bg-brand-600 hover:bg-brand-700 text-white',
+      color: 'bg-jfb-noir hover:bg-jfb-noir-doux text-white',
       to: '/constructeur',
     },
     {
@@ -57,7 +57,7 @@ export default function Dashboard() {
       icon: '📄',
       title: 'Générer un bulletin',
       desc: 'Depuis les rétroactions sauvegardées',
-      color: 'bg-accent-500 hover:bg-accent-600 text-white',
+      color: 'bg-jfb-noir hover:bg-jfb-noir-doux text-white',
       to: '/suivi?action=bulletin',
     },
     {
@@ -85,9 +85,9 @@ export default function Dashboard() {
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4">
         {[
-          { label: 'Rétroactions', value: stats.total, icon: '✏️', color: 'text-brand-600' },
+          { label: 'Rétroactions', value: stats.total, icon: '✏️', color: 'text-jfb-rose' },
           { label: 'Cette semaine', value: stats.semaine, icon: '📅', color: 'text-purple-600' },
-          { label: 'Bulletins générés', value: stats.bulletins, icon: '📄', color: 'text-accent-500' },
+          { label: 'Bulletins générés', value: stats.bulletins, icon: '📄', color: 'text-jfb-rose' },
           { label: 'Suivis prévus', value: stats.suivis, icon: '✅', color: 'text-green-600' },
         ].map(s => (
           <div key={s.label} className="card py-4">
@@ -114,8 +114,8 @@ export default function Dashboard() {
 
       {/* Guide de démarrage (visible uniquement si aucune rétroaction) */}
       {!loading && stats.total === 0 && (
-        <div className="card border-brand-200 bg-gradient-to-br from-brand-50 to-white">
-          <h2 className="text-sm font-semibold text-brand-700 uppercase tracking-wider mb-4">
+        <div className="card border-jfb-bordure bg-gradient-to-br from-jfb-beige to-white">
+          <h2 className="text-sm font-semibold text-jfb-rose uppercase tracking-wider mb-4">
             Par où commencer ?
           </h2>
           <div className="space-y-3">
@@ -154,8 +154,8 @@ export default function Dashboard() {
                 cta: 'Voir le suivi',
               },
             ].map(item => (
-              <div key={item.step} className="flex items-start gap-3 p-3 rounded-lg hover:bg-brand-50 transition-colors group">
-                <div className="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+              <div key={item.step} className="flex items-start gap-3 p-3 rounded-lg hover:bg-jfb-beige transition-colors group">
+                <div className="w-7 h-7 rounded-full bg-jfb-noir text-white flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
                   {item.step}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -169,8 +169,8 @@ export default function Dashboard() {
                   onClick={() => navigate(item.to)}
                   className={`text-xs px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors ${
                     item.primary
-                      ? 'bg-brand-600 text-white hover:bg-brand-700'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 group-hover:bg-brand-100 group-hover:text-brand-700'
+                      ? 'bg-jfb-noir text-white hover:bg-jfb-noir-doux'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 group-hover:bg-jfb-beige group-hover:text-jfb-rose'
                   }`}
                 >
                   {item.cta}
@@ -186,7 +186,7 @@ export default function Dashboard() {
         <div>
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Dernières rétroactions</h2>
-            <button onClick={() => navigate('/suivi')} className="text-xs text-brand-600 hover:underline">
+            <button onClick={() => navigate('/suivi')} className="text-xs text-jfb-rose hover:underline">
               Voir tout
             </button>
           </div>
@@ -220,7 +220,7 @@ export default function Dashboard() {
       {loading && <div className="card animate-pulse h-32" />}
 
       {/* Rappel dimensions */}
-      <div className="card bg-gradient-to-r from-brand-50 to-purple-50 border-brand-100">
+      <div className="card bg-gradient-to-r from-jfb-beige to-purple-50 border-jfb-bordure">
         <h3 className="text-sm font-semibold text-gray-700 mb-3">
           Les 4 dimensions de la littératie à la rétroaction
           <span className="text-xs font-normal text-gray-400 ml-2">Carless & Boud (2018)</span>

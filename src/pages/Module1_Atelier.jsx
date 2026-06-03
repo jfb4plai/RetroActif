@@ -214,7 +214,7 @@ export default function Module1_Atelier() {
       {/* Barre de progression */}
       <div className="flex items-center gap-3">
         <div className="flex-1 bg-gray-200 rounded-full h-2">
-          <div className="bg-brand-500 h-2 rounded-full transition-all" style={{ width: `${Math.min(progress, 100)}%` }} />
+          <div className="bg-jfb-rose h-2 rounded-full transition-all" style={{ width: `${Math.min(progress, 100)}%` }} />
         </div>
         <span className="text-xs text-gray-500">Étape {steps}</span>
       </div>
@@ -229,8 +229,8 @@ export default function Module1_Atelier() {
               <h2 className="text-lg font-semibold text-gray-900">{node.question}</h2>
               {node.aide && (
                 <details className="mt-2">
-                  <summary className="text-xs text-brand-600 cursor-pointer hover:underline">Pourquoi cette question ?</summary>
-                  <p className="text-xs text-gray-600 mt-1 leading-relaxed border-l-2 border-brand-200 pl-3">{node.aide}</p>
+                  <summary className="text-xs text-jfb-rose cursor-pointer hover:underline">Pourquoi cette question ?</summary>
+                  <p className="text-xs text-gray-600 mt-1 leading-relaxed border-l-2 border-jfb-bordure pl-3">{node.aide}</p>
                 </details>
               )}
             </div>
@@ -263,9 +263,9 @@ export default function Module1_Atelier() {
                 {node.explication}
               </p>
             </div>
-            <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
-              <div className="text-xs font-semibold text-brand-800 mb-1">Action suggérée</div>
-              <p className="text-sm text-brand-700">{node.action}</p>
+            <div className="bg-jfb-beige border border-jfb-bordure rounded-xl p-4">
+              <div className="text-xs font-semibold text-jfb-noir mb-1">Action suggérée</div>
+              <p className="text-sm text-jfb-gris">{node.action}</p>
             </div>
             <button className="btn-primary" onClick={() => goTo(node.next)}>
               {node.nextLabel ?? 'Continuer →'}

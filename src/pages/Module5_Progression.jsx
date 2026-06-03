@@ -132,7 +132,7 @@ export default function Module5_Progression() {
         ].map(t => (
           <button key={t.k} onClick={() => setTab(t.k)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              tab === t.k ? 'bg-white shadow text-brand-700' : 'text-gray-500'
+              tab === t.k ? 'bg-white shadow text-jfb-rose' : 'text-gray-500'
             }`}>
             {t.l}
           </button>
@@ -171,7 +171,7 @@ export default function Module5_Progression() {
                   <div className="w-full bg-gray-100 rounded-full h-2">
                     <div
                       className={`h-2 rounded-full transition-all ${
-                        pct >= 75 ? 'bg-green-500' : pct >= 50 ? 'bg-brand-500' : pct >= 25 ? 'bg-yellow-500' : 'bg-red-400'
+                        pct >= 75 ? 'bg-green-500' : pct >= 50 ? 'bg-jfb-rose' : pct >= 25 ? 'bg-yellow-500' : 'bg-red-400'
                       }`}
                       style={{ width: `${pct}%` }}
                     />
@@ -187,8 +187,8 @@ export default function Module5_Progression() {
                           <label key={e.v}
                             className={`flex-1 text-center py-1.5 rounded-lg cursor-pointer text-xs font-medium border transition-all ${
                               reponses[q.id] === e.v
-                                ? 'bg-brand-600 text-white border-brand-600'
-                                : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-brand-300'
+                                ? 'bg-jfb-noir text-white border-jfb-noir'
+                                : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-jfb-gris-cl'
                             }`}>
                             <input type="radio" name={q.id} value={e.v}
                               checked={reponses[q.id] === e.v}
@@ -247,7 +247,7 @@ export default function Module5_Progression() {
                         {mode === 'debutant' ? '🌱 Débutant' : mode === 'intermediaire' ? '🌿 Intermédiaire' : mode === 'expert' ? '🌳 Expert' : mode === 'logigramme' ? '🔀 Logigramme' : mode}
                       </div>
                       <div className="flex-1 bg-gray-100 rounded-full h-3">
-                        <div className="bg-brand-500 h-3 rounded-full"
+                        <div className="bg-jfb-rose h-3 rounded-full"
                           style={{ width: `${Math.round((n / stats.total) * 100)}%` }} />
                       </div>
                       <div className="text-xs text-gray-500 w-8 text-right">{n}</div>
@@ -257,7 +257,7 @@ export default function Module5_Progression() {
               </div>
 
               {/* Recommandations */}
-              <div className="card bg-gradient-to-br from-brand-50 to-purple-50 border-brand-100">
+              <div className="card bg-gradient-to-br from-jfb-beige to-purple-50 border-jfb-bordure">
                 <h3 className="font-semibold text-gray-800 mb-3 text-sm">Points d'attention</h3>
                 <div className="space-y-2 text-sm">
                   {stats.tauxSuivi < 50 && (
@@ -307,7 +307,7 @@ export default function Module5_Progression() {
                     <h3 className="font-semibold text-gray-800 text-sm">
                       Auto-évaluation du {new Date(eval_.created_at).toLocaleDateString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </h3>
-                    {i === 0 && <span className="badge bg-brand-100 text-brand-700">Dernière</span>}
+                    {i === 0 && <span className="badge bg-jfb-beige text-jfb-rose">Dernière</span>}
                   </div>
                   <div className="grid grid-cols-4 gap-2">
                     {DIMENSIONS_LITTERATIE.map(dim => {
@@ -337,7 +337,7 @@ export default function Module5_Progression() {
 
 function StatCard({ label, value, icon, color }) {
   const colors = {
-    brand: 'text-brand-600',
+    brand: 'text-jfb-rose',
     green: 'text-green-600',
     yellow: 'text-yellow-600',
     red: 'text-red-500',

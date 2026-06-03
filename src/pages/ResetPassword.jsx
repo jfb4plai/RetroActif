@@ -42,14 +42,14 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-jfb-beige to-jfb-beige-dk flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <LogoPlai size="lg" />
           </div>
-          <h1 className="text-3xl font-bold text-brand-900">RetroActif</h1>
-          <p className="text-brand-700 mt-1 text-sm">Littératie à la rétroaction — PLAI</p>
+          <h1 className="text-3xl font-bold text-jfb-noir">RetroActif</h1>
+          <p className="text-jfb-gris mt-1 text-sm">Littératie à la rétroaction — PLAI</p>
         </div>
 
         <div className="card">

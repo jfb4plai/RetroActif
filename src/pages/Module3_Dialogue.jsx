@@ -102,7 +102,7 @@ export default function Module3_Dialogue() {
             ].map(t => (
               <button key={t.k} onClick={() => setTab(t.k)}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                  tab === t.k ? 'bg-white shadow text-brand-700' : 'text-gray-500'
+                  tab === t.k ? 'bg-white shadow text-jfb-rose' : 'text-gray-500'
                 }`}>
                 {t.l}
               </button>

@@ -43,8 +43,8 @@ export const DIMENSIONS_LITTERATIE = [
     id: 'litteratie',
     label: 'Littératie au sens strict',
     description: 'Décoder, trier, prioriser, traduire en actions',
-    color: 'bg-brand-100 text-brand-800',
-    dot: 'bg-brand-500',
+    color: 'bg-jfb-beige text-jfb-noir',
+    dot: 'bg-jfb-rose',
   },
   {
     id: 'appropriation',

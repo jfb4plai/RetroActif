@@ -90,13 +90,13 @@ export default function BouclePage() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-50 flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-jfb-beige flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
         {/* En-tête PLAI */}
         <div className="flex items-center gap-3 mb-8">
           <img src="/plai-logo.jpg" alt="PLAI" className="h-10 w-10 rounded-xl object-cover" />
           <div>
-            <p className="text-xs font-semibold text-brand-700 uppercase tracking-wide">RetroActif</p>
+            <p className="text-xs font-semibold text-jfb-rose uppercase tracking-wide">RetroActif</p>
             <p className="text-xs text-gray-500">Pôle Liégeois d'Accompagnement vers une École Inclusive</p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function BouclePage() {
         {/* États */}
         {phase === 'loading' && (
           <div className="card text-center py-16">
-            <div className="w-8 h-8 border-2 border-brand-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="w-8 h-8 border-2 border-jfb-rose border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p className="text-gray-500 text-sm">Chargement...</p>
           </div>
         )}
@@ -149,7 +149,7 @@ export default function BouclePage() {
                 </div>
               )}
 
-              <div className="bg-brand-50 border border-brand-200 rounded-xl p-4">
+              <div className="bg-jfb-beige border border-jfb-bordure rounded-xl p-4">
                 <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{retro.texte_final}</p>
               </div>
             </div>

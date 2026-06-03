@@ -70,7 +70,7 @@ export default function Module6_Constructeur() {
             <button key={n.value} onClick={() => setMode(n.value)}
               title={n.description}
               className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                mode === n.value ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
+                mode === n.value ? 'bg-white shadow text-jfb-rose' : 'text-gray-500 hover:text-gray-700'
               }`}>
               {n.icon} {n.label}
             </button>
@@ -101,7 +101,7 @@ function ObstacleSelector({ value, onChange }) {
           <label key={o.value}
             className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
               value === o.value
-                ? 'border-brand-400 bg-brand-50'
+                ? 'border-jfb-rose bg-jfb-beige'
                 : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
             }`}>
             <input
@@ -110,10 +110,10 @@ function ObstacleSelector({ value, onChange }) {
               value={o.value}
               checked={value === o.value}
               onChange={() => onChange(o.value)}
-              className="mt-0.5 accent-brand-600 shrink-0"
+              className="mt-0.5 shrink-0"
             />
             <div className="min-w-0">
-              <p className={`text-sm font-medium ${value === o.value ? 'text-brand-700' : 'text-gray-700'}`}>
+              <p className={`text-sm font-medium ${value === o.value ? 'text-jfb-rose' : 'text-gray-700'}`}>
                 {o.label}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">{o.description}</p>
@@ -225,15 +225,15 @@ function ModeDebutant({ profile, navigate, prefill }) {
         <div className="flex items-center justify-between">
           {STEPS.map((s, i) => (
             <div key={s.n} className="flex items-center">
-              <div className={`flex items-center gap-2 ${step >= s.n ? 'text-brand-700' : 'text-gray-400'}`}>
+              <div className={`flex items-center gap-2 ${step >= s.n ? 'text-jfb-rose' : 'text-gray-400'}`}>
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                  step > s.n ? 'bg-brand-600 text-white' :
-                  step === s.n ? 'bg-brand-100 text-brand-700 ring-2 ring-brand-400' :
+                  step > s.n ? 'bg-jfb-noir text-white' :
+                  step === s.n ? 'bg-jfb-beige text-jfb-rose ring-2 ring-jfb-rose' :
                   'bg-gray-100 text-gray-400'
                 }`}>{step > s.n ? '✓' : s.n}</div>
                 <span className="text-xs font-medium hidden sm:block">{s.label}</span>
               </div>
-              {i < STEPS.length - 1 && <div className={`w-8 h-0.5 mx-2 ${step > s.n ? 'bg-brand-400' : 'bg-gray-200'}`} />}
+              {i < STEPS.length - 1 && <div className={`w-8 h-0.5 mx-2 ${step > s.n ? 'bg-jfb-rose' : 'bg-gray-200'}`} />}
             </div>
           ))}
         </div>
@@ -317,10 +317,9 @@ function ModeDebutant({ profile, navigate, prefill }) {
                 { v: true, l: 'Oui — révision planifiée' },
               ].map(o => (
                 <label key={String(o.v)} className={`flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-all ${
-                  ctx.suivi_prevu === o.v ? 'border-brand-500 bg-brand-50 text-brand-700' : 'border-gray-200 text-gray-600'
+                  ctx.suivi_prevu === o.v ? 'border-jfb-rose bg-jfb-beige text-jfb-rose' : 'border-gray-200 text-gray-600'
                 }`}>
-                  <input type="radio" checked={ctx.suivi_prevu === o.v} onChange={() => update('suivi_prevu', o.v)}
-                    className="accent-brand-600" />
+                  <input type="radio" checked={ctx.suivi_prevu === o.v} onChange={() => update('suivi_prevu', o.v)} />
                   <span className="text-sm">{o.l}</span>
                 </label>
               ))}
@@ -400,7 +399,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
       {step === 4 && (
         <div className="space-y-4">
           {/* Zone 80% générée */}
-          <div className="card border-l-4 border-brand-400 space-y-3">
+          <div className="card border-l-4 border-jfb-rose space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-gray-800">Suggestion RetroActif</h3>
@@ -408,7 +407,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
                   Généré à partir de vos observations — à affiner selon votre connaissance de l'élève
                 </p>
               </div>
-              <span className="badge bg-brand-100 text-brand-700 text-xs">80% généré</span>
+              <span className="badge bg-jfb-beige text-jfb-rose text-xs">80% généré</span>
             </div>
             <textarea
               className="input min-h-[140px] resize-y text-sm"
@@ -427,7 +426,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
                   } catch (e) { setError(e.message) }
                   setGenerating(false)
                 }}
-                className="text-xs text-brand-600 hover:underline"
+                className="text-xs text-jfb-rose hover:underline"
                 disabled={generating}
               >
                 {generating ? 'Régénération...' : '↻ Régénérer'}
@@ -453,7 +452,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
           </div>
 
           {/* Zone 20% personnalisé */}
-          <div className="card border-l-4 border-accent-400 space-y-3">
+          <div className="card border-l-4 border-jfb-rose-dk space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-gray-800">Votre touche personnelle</h3>
@@ -461,7 +460,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
                   Ce que vous seul savez : contexte familial, progression récente, encouragement ciblé...
                 </p>
               </div>
-              <span className="badge bg-accent-100 text-accent-600 text-xs">20% personnel</span>
+              <span className="badge bg-jfb-beige text-jfb-rose-dk text-xs">20% personnel</span>
             </div>
             <textarea
               className="input min-h-[80px] resize-y text-sm"
@@ -807,11 +806,11 @@ function ModeExpert({ profile, navigate, prefill }) {
 
       {/* Résultat amélioré */}
       {ameliore && (
-        <div className="card border-l-4 border-brand-400">
+        <div className="card border-l-4 border-jfb-rose">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-semibold text-gray-800">Version améliorée</h3>
             <button onClick={() => { setTexte(ameliore); setAmeliore('') }}
-              className="text-xs text-brand-600 hover:underline">
+              className="text-xs text-jfb-rose hover:underline">
               Utiliser cette version
             </button>
           </div>

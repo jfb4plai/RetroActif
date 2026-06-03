@@ -56,7 +56,7 @@ export default function Module7_Pairs() {
         ].map(t => (
           <button key={t.k} onClick={() => setTab(t.k)}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-              tab === t.k ? 'bg-white shadow text-brand-700' : 'text-gray-500 hover:text-gray-700'
+              tab === t.k ? 'bg-white shadow text-jfb-rose' : 'text-gray-500 hover:text-gray-700'
             }`}>
             {t.l}
           </button>
@@ -93,7 +93,7 @@ function ListeAssignments({ assignments, loading, onRefresh, onNew }) {
   if (assignments.length === 0) return (
     <div className="card text-center py-12 space-y-2">
       <p className="text-gray-400 text-sm">Aucun assignment créé.</p>
-      <button onClick={onNew} className="text-brand-600 text-sm hover:underline">
+      <button onClick={onNew} className="text-jfb-rose text-sm hover:underline">
         Créer le premier →
       </button>
     </div>
@@ -119,7 +119,7 @@ function AssignmentCard({ a, selected, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`card py-3 px-4 cursor-pointer hover:shadow-md transition-all ${selected ? 'ring-2 ring-brand-400' : ''}`}
+      className={`card py-3 px-4 cursor-pointer hover:shadow-md transition-all ${selected ? 'ring-2 ring-jfb-rose' : ''}`}
     >
       <div className="flex items-center gap-3">
         <span className="text-xl">{a.soumis ? '✅' : '⏳'}</span>
@@ -166,9 +166,9 @@ function AssignmentDetail({ a, onClose, onRefresh }) {
   }
 
   return (
-    <div className="card border border-brand-200 bg-brand-50 space-y-4">
+    <div className="card border border-jfb-bordure bg-jfb-beige space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-brand-900">Détail — {a.eleve_donneur} → {a.eleve_receveur}</h3>
+        <h3 className="font-semibold text-jfb-noir">Détail — {a.eleve_donneur} → {a.eleve_receveur}</h3>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
       </div>
 
@@ -207,7 +207,7 @@ function AssignmentDetail({ a, onClose, onRefresh }) {
               <p className="text-sm font-medium text-gray-800">{i + 1}. {c}</p>
               {a.soumis && (
                 <div className="mt-1 space-y-0.5">
-                  <p className="text-xs text-brand-700 font-medium">
+                  <p className="text-xs text-jfb-rose font-medium">
                     Note : {a.feedback_notes?.[i] ?? '—'}/4
                     {a.feedback_notes?.[i] ? ` — ${LABELS[(a.feedback_notes[i] ?? 1) - 1]}` : ''}
                   </p>
@@ -309,7 +309,7 @@ function FormulaireAssignment({ onCreated }) {
         <div className="flex items-center justify-between">
           <label className="text-sm font-medium text-gray-700">Critères d'évaluation ({criteres.length}/{MAX_CRITERES})</label>
           {criteres.length < MAX_CRITERES && (
-            <button onClick={addCritere} className="text-xs text-brand-600 hover:underline">+ Ajouter</button>
+            <button onClick={addCritere} className="text-xs text-jfb-rose hover:underline">+ Ajouter</button>
           )}
         </div>
         {criteres.map((c, i) => (

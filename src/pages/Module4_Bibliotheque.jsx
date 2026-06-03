@@ -199,7 +199,7 @@ export default function Module4_Bibliotheque() {
           ].map(s => (
             <button key={s.k} onClick={() => setSource(s.k)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                source === s.k ? 'bg-brand-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                source === s.k ? 'bg-jfb-noir text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}>
               {s.l}
             </button>
@@ -273,7 +273,7 @@ export default function Module4_Bibliotheque() {
                     </p>
                   </div>
                   <button onClick={() => copyToClipboard(r.texte_final, r.id)}
-                    className="text-xs text-brand-600 hover:text-brand-800 whitespace-nowrap">
+                    className="text-xs text-jfb-rose hover:text-jfb-rose-dk whitespace-nowrap">
                     {copied === r.id ? '✓ Copié' : 'Copier'}
                   </button>
                 </div>
@@ -288,11 +288,11 @@ export default function Module4_Bibliotheque() {
 
 function ExempleCard({ exemple: e, selected, onSelect, onCopy, copied, niveauLabel, typeIcon }) {
   return (
-    <div className={`card transition-all ${selected ? 'ring-2 ring-brand-400' : ''}`}>
+    <div className={`card transition-all ${selected ? 'ring-2 ring-jfb-rose' : ''}`}>
       <div className="flex items-start justify-between gap-3 cursor-pointer" onClick={onSelect}>
         <div className="flex-1 min-w-0">
           <div className="flex gap-2 flex-wrap mb-2">
-            <span className="badge bg-brand-100 text-brand-700">{niveauLabel}</span>
+            <span className="badge bg-jfb-beige text-jfb-rose">{niveauLabel}</span>
             {e.type_enseignement !== 'general' && (
               <span className="badge bg-purple-100 text-purple-700">{e.type_enseignement}</span>
             )}
@@ -326,7 +326,7 @@ function ExempleCard({ exemple: e, selected, onSelect, onCopy, copied, niveauLab
 
         <div className="flex flex-col gap-2 items-end">
           <button onClick={e2 => { e2.stopPropagation(); onCopy() }}
-            className="text-xs text-brand-600 hover:text-brand-800 whitespace-nowrap">
+            className="text-xs text-jfb-rose hover:text-jfb-rose-dk whitespace-nowrap">
             {copied ? '✓ Copié' : 'Copier'}
           </button>
           <span className="text-gray-300 text-xs">{selected ? '▲' : '▼'}</span>
