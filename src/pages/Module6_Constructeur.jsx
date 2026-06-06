@@ -214,9 +214,9 @@ function ScreenCorpus({ onBack, onExtracted }) {
       }
 
       onExtracted({
-        tache: extracted.tache ?? '',
+        infos_complementaires: extracted.tache ?? '',
         points_forts: extracted.points_forts ?? '',
-        points_faibles: extracted.points_faibles ?? '',
+        difficultes: extracted.points_faibles ?? '',
         niveau: extracted.niveau_suggere ?? '',
         matiere: extracted.matiere_suggeree ?? '',
       })
