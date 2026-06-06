@@ -10,7 +10,7 @@
  *              hal-04621117, dumas-05324645
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -18,6 +18,7 @@ import {
   NIVEAUX, TYPES_ENSEIGNEMENT, TYPES_RETROACTION,
   NIVEAUX_MAITRISE, MATIERES, TYPES_OBSTACLE
 } from '../lib/constants'
+import { extractFile } from '../lib/extractFile'
 
 // ── Appel API generate ─────────────────────────────────────
 async function callGenerate(action, context) {
@@ -37,6 +38,7 @@ export default function Module6_Constructeur() {
   const navigate = useNavigate()
   const location = useLocation()
   const [prefill, setPrefill] = useState(null)
+  const [screen, setScreen] = useState('entry')
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -49,7 +51,12 @@ export default function Module6_Constructeur() {
         headers: { Authorization: `Bearer ${session.access_token}` },
       })
         .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) setPrefill(data) })
+        .then(data => {
+          if (data) {
+            setPrefill(data)
+            setScreen('main')
+          }
+        })
         .catch(() => {})
     })
   }, [location.search])
@@ -57,6 +64,29 @@ export default function Module6_Constructeur() {
   // Mode selon profil enseignant (modifiable dans la session)
   const [mode, setMode] = useState(profile?.niveau_maitrise ?? 'debutant')
 
+  const handleCorpusPrefill = (extracted) => {
+    setPrefill(extracted)
+    setScreen('main')
+  }
+
+  if (screen === 'entry') {
+    return (
+      <ScreenEntry
+        onManual={() => setScreen('main')}
+        onCorpus={() => setScreen('corpus')}
+      />
+    )
+  }
+  if (screen === 'corpus') {
+    return (
+      <ScreenCorpus
+        onBack={() => setScreen('entry')}
+        onExtracted={handleCorpusPrefill}
+      />
+    )
+  }
+
+  // screen === 'main' — existing flow unchanged
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -81,6 +111,220 @@ export default function Module6_Constructeur() {
       {mode === 'debutant'      && <ModeDebutant profile={profile} navigate={navigate} prefill={prefill} />}
       {mode === 'intermediaire' && <ModeIntermediaire profile={profile} navigate={navigate} prefill={prefill} />}
       {mode === 'expert'        && <ModeExpert profile={profile} navigate={navigate} prefill={prefill} />}
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// ÉCRAN ENTRY — choix du mode d'entrée
+// ════════════════════════════════════════════════════════════
+function ScreenEntry({ onManual, onCorpus }) {
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">Constructeur de rétroaction</h1>
+      <p className="text-gray-500 mb-8">Comment souhaitez-vous commencer ?</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          onClick={onCorpus}
+          className="flex flex-col gap-2 p-6 rounded-xl border-2 border-teal-500 bg-teal-50 text-left hover:bg-teal-100 transition"
+        >
+          <span className="text-2xl">📄</span>
+          <span className="font-semibold text-gray-900">Importer des documents</span>
+          <span className="text-sm text-gray-600">
+            Déposez la production de l'élève et/ou l'énoncé. L'IA pré-remplit le formulaire à partir de vos documents.
+          </span>
+        </button>
+        <button
+          onClick={onManual}
+          className="flex flex-col gap-2 p-6 rounded-xl border-2 border-gray-200 bg-white text-left hover:bg-gray-50 transition"
+        >
+          <span className="text-2xl">✏️</span>
+          <span className="font-semibold text-gray-900">Saisir manuellement</span>
+          <span className="text-sm text-gray-600">
+            Remplissez le formulaire étape par étape, sans document.
+          </span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// ÉCRAN CORPUS — import de documents
+// ════════════════════════════════════════════════════════════
+function ScreenCorpus({ onBack, onExtracted }) {
+  const [eleveText, setEleveText] = useState('')
+  const [eleveFiles, setEleveFiles] = useState([])
+  const [enoncéText, setEnoncéText] = useState('')
+  const [enoncéFiles, setEnoncéFiles] = useState([])
+  const [extracting, setExtracting] = useState(false)
+  const [error, setError] = useState('')
+  const [fileErrors, setFileErrors] = useState({ eleve: '', enonce: '' })
+
+  const hasContent = eleveText.trim() || eleveFiles.length > 0 || enoncéText.trim() || enoncéFiles.length > 0
+
+  const handleFileAdd = async (files, zone) => {
+    const setter = zone === 'eleve' ? setEleveFiles : setEnoncéFiles
+    const errSetter = (msg) => setFileErrors(prev => ({ ...prev, [zone]: msg }))
+    errSetter('')
+    for (const file of files) {
+      try {
+        await extractFile(file) // early validation
+        setter(prev => [...prev, file])
+      } catch (e) {
+        errSetter(e.message)
+      }
+    }
+  }
+
+  const handleExtract = async () => {
+    setExtracting(true)
+    setError('')
+    try {
+      const extractTexts = async (files) => {
+        const texts = []
+        for (const f of files) {
+          const { text } = await extractFile(f)
+          if (text?.trim()) texts.push(text.trim())
+        }
+        return texts.join('\n\n')
+      }
+
+      const [eleveExtracted, enoncéExtracted] = await Promise.all([
+        extractTexts(eleveFiles),
+        extractTexts(enoncéFiles),
+      ])
+
+      const corpus_eleve = [eleveText.trim(), eleveExtracted].filter(Boolean).join('\n\n')
+      const corpus_enonce = [enoncéText.trim(), enoncéExtracted].filter(Boolean).join('\n\n')
+
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'extract_corpus', context: { corpus_eleve, corpus_enonce } }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error ?? 'Erreur serveur')
+
+      let extracted
+      try {
+        extracted = JSON.parse(data.text)
+      } catch {
+        throw new Error('Réponse IA invalide — réessayez.')
+      }
+
+      onExtracted({
+        tache: extracted.tache ?? '',
+        points_forts: extracted.points_forts ?? '',
+        points_faibles: extracted.points_faibles ?? '',
+        niveau: extracted.niveau_suggere ?? '',
+        matiere: extracted.matiere_suggeree ?? '',
+      })
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setExtracting(false)
+    }
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <button className="text-sm text-gray-500 hover:text-gray-800 mb-6" onClick={onBack}>← Retour</button>
+      <h1 className="text-xl font-bold text-gray-900 mb-6">Importer des documents</h1>
+
+      <div className="space-y-6">
+        <CorpusZone
+          label="Production de l'élève"
+          hint="Copie, exercice rendu, production écrite ou orale"
+          text={eleveText}
+          onTextChange={setEleveText}
+          files={eleveFiles}
+          onFilesAdd={(f) => handleFileAdd(f, 'eleve')}
+          onFileRemove={(i) => setEleveFiles(prev => prev.filter((_, idx) => idx !== i))}
+          fileError={fileErrors.eleve}
+        />
+        <CorpusZone
+          label="Énoncé / activité"
+          hint="Ce que vous avez donné aux élèves"
+          text={enoncéText}
+          onTextChange={setEnoncéText}
+          files={enoncéFiles}
+          onFilesAdd={(f) => handleFileAdd(f, 'enonce')}
+          onFileRemove={(i) => setEnoncéFiles(prev => prev.filter((_, idx) => idx !== i))}
+          fileError={fileErrors.enonce}
+        />
+      </div>
+
+      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+
+      <div className="mt-8 flex justify-end">
+        <button
+          className="btn-primary"
+          disabled={!hasContent || extracting}
+          onClick={handleExtract}
+        >
+          {extracting ? 'Extraction en cours…' : 'Extraire →'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
+// COMPOSANT CORPUS ZONE — zone de dépôt fichiers + texte
+// ════════════════════════════════════════════════════════════
+function CorpusZone({ label, hint, text, onTextChange, files, onFilesAdd, onFileRemove, fileError }) {
+  const inputRef = useRef(null)
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    onFilesAdd(Array.from(e.dataTransfer.files))
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 p-4 space-y-3">
+      <div>
+        <p className="font-medium text-gray-800">{label}</p>
+        <p className="text-xs text-gray-500">{hint}</p>
+      </div>
+
+      <div
+        className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-teal-400 transition"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+      >
+        <p className="text-sm text-gray-500">Glissez vos fichiers ici ou cliquez</p>
+        <p className="text-xs text-gray-400 mt-1">.pdf · .docx · .odt · .txt · .jpg · .png</p>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept=".pdf,.docx,.odt,.txt,.jpg,.jpeg,.png"
+          className="hidden"
+          onChange={(e) => onFilesAdd(Array.from(e.target.files))}
+        />
+      </div>
+
+      {fileError && <p className="text-xs text-red-600">{fileError}</p>}
+
+      {files.length > 0 && (
+        <ul className="space-y-1">
+          {files.map((f, i) => (
+            <li key={i} className="flex items-center justify-between text-sm text-gray-700 bg-gray-50 rounded px-3 py-1">
+              <span className="truncate">{f.name}</span>
+              <button className="text-gray-400 hover:text-red-500 ml-2" onClick={() => onFileRemove(i)}>✕</button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <textarea
+        className="input w-full min-h-[80px] resize-y text-sm"
+        placeholder="ou collez le texte ici…"
+        value={text}
+        onChange={(e) => onTextChange(e.target.value)}
+      />
     </div>
   )
 }
