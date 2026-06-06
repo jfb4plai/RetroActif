@@ -160,8 +160,16 @@ function ScreenCorpus({ onBack, onExtracted }) {
   const [extracting, setExtracting] = useState(false)
   const [error, setError] = useState('')
   const [fileErrors, setFileErrors] = useState({ eleve: '', enonce: '' })
+  const extractCache = useRef(new Map())
 
   const hasContent = eleveText.trim() || eleveFiles.length > 0 || enoncéText.trim() || enoncéFiles.length > 0
+
+  const extractCached = async (file) => {
+    if (extractCache.current.has(file)) return extractCache.current.get(file)
+    const result = await extractFile(file)
+    extractCache.current.set(file, result)
+    return result
+  }
 
   const handleFileAdd = async (files, zone) => {
     const setter = zone === 'eleve' ? setEleveFiles : setEnoncéFiles
@@ -169,7 +177,7 @@ function ScreenCorpus({ onBack, onExtracted }) {
     errSetter('')
     for (const file of files) {
       try {
-        await extractFile(file) // early validation
+        await extractCached(file)
         setter(prev => [...prev, file])
       } catch (e) {
         errSetter(e.message)
@@ -184,7 +192,7 @@ function ScreenCorpus({ onBack, onExtracted }) {
       const extractTexts = async (files) => {
         const texts = []
         for (const f of files) {
-          const { text } = await extractFile(f)
+          const { text } = await extractCached(f)
           if (text?.trim()) texts.push(text.trim())
         }
         return texts.join('\n\n')
