@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: action === 'bulletin' ? 1200 : action === 'ameliorer' ? 600 : 800,
+        max_tokens: action === 'bulletin' ? 1200 : action === 'ameliorer' ? 600 : action === 'extract_corpus' ? 400 : 800,
         system: systemPrompt,
         messages: [{ role: 'user', content: userMessage }],
       }),
@@ -180,6 +180,14 @@ Reformule pour que :
 ${antiClaudisation}`
   }
 
+  if (action === 'extract_corpus') {
+    return `Tu es un conseiller pédagogique FWB. Tu analyses des documents scolaires (productions élèves, énoncés) pour en extraire les informations pédagogiques clés.
+Règles absolues :
+- Si un champ ne peut pas être extrait avec certitude, retourne une chaîne vide "" pour ce champ — jamais d'invention.
+- Retourne UNIQUEMENT un objet JSON valide, sans texte avant ni après, sans balises markdown.
+- Langue : français, registre professionnel enseignant.`
+  }
+
   return `Tu es un conseiller pédagogique FWB. ${antiClaudisation}`
 }
 
@@ -232,6 +240,26 @@ Génère le commentaire directement.`
 ${context.raison ? `Ce qui pose problème : ${context.raison}` : ''}
 
 Donne directement la version améliorée, sans explication autour.`
+  }
+
+  if (action === 'extract_corpus') {
+    const parts = []
+    if (context.corpus_eleve?.trim()) {
+      parts.push(`<production_eleve>\n${context.corpus_eleve.trim()}\n</production_eleve>`)
+    }
+    if (context.corpus_enonce?.trim()) {
+      parts.push(`<enonce_enseignant>\n${context.corpus_enonce.trim()}\n</enonce_enseignant>`)
+    }
+    return `Analyse ces documents et retourne un objet JSON avec exactement ces 5 champs :
+{
+  "tache": "description courte de la tâche demandée à l'élève (1-2 phrases)",
+  "points_forts": "ce qui est réussi dans la production (1-3 points, phrases courtes)",
+  "points_faibles": "ce qui pose problème ou doit être amélioré (1-3 points, phrases courtes)",
+  "niveau_suggere": "une valeur parmi : cycle2, cycle3, cycle4, lycee, post_bac — ou chaîne vide",
+  "matiere_suggeree": "nom de la matière ou chaîne vide"
+}
+
+${parts.join('\n\n')}`
   }
 
   return context.prompt ?? ''
