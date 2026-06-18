@@ -42,7 +42,7 @@ export default function BouclePage() {
     } catch {}
 
     const { data, error } = await supabase
-      .from('retroactions')
+      .from('retro_retroactions')
       .select('id, texte_final, matiere, eleve_code, niveau, partage_token')
       .eq('partage_token', token)
       .single()
@@ -64,7 +64,7 @@ export default function BouclePage() {
     setError('')
     setSubmitting(true)
 
-    const { error } = await supabase.from('boucles').insert({
+    const { error } = await supabase.from('retro_boucles').insert({
       retroaction_id: retro.id,
       token,
       eleve_code: retro.eleve_code ?? null,

@@ -38,7 +38,7 @@ export default function PeerPage() {
     } catch {}
 
     const { data, error } = await supabase
-      .from('peer_feedbacks')
+      .from('retro_peer_feedbacks')
       .select('id, eleve_donneur, eleve_receveur, description_travail, criteres, soumis, token')
       .eq('token', token)
       .single()
@@ -64,7 +64,7 @@ export default function PeerPage() {
     setSubmitting(true)
 
     const { error } = await supabase
-      .from('peer_feedbacks')
+      .from('retro_peer_feedbacks')
       .update({
         feedback_notes: notes,
         feedback_commentaires: commentaires,

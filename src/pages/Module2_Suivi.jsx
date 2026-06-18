@@ -48,7 +48,7 @@ export default function Module2_Suivi() {
   const load = useCallback(async () => {
     setLoading(true)
     const { data } = await supabase
-      .from('retroactions')
+      .from('retro_retroactions')
       .select('*')
       .order('created_at', { ascending: false })
     setRetroactions(data ?? [])
@@ -167,7 +167,7 @@ function RetroCard({ r, selected, onClick, onUpdate }) {
 
   async function toggleSuivi(e) {
     e.stopPropagation()
-    await supabase.from('retroactions').update({ suivi_realise: !r.suivi_realise }).eq('id', r.id)
+    await supabase.from('retro_retroactions').update({ suivi_realise: !r.suivi_realise }).eq('id', r.id)
     onUpdate()
   }
 
@@ -231,7 +231,7 @@ function RetroDetail({ r, onClose, onUpdate }) {
   async function fetchBoucle() {
     setLoadingBoucle(true)
     const { data } = await supabase
-      .from('boucles')
+      .from('retro_boucles')
       .select('*')
       .eq('retroaction_id', r.id)
       .order('created_at', { ascending: false })
@@ -244,14 +244,14 @@ function RetroDetail({ r, onClose, onUpdate }) {
   async function generateToken() {
     setGeneratingToken(true)
     const newToken = crypto.randomUUID()
-    await supabase.from('retroactions').update({ partage_token: newToken }).eq('id', r.id)
+    await supabase.from('retro_retroactions').update({ partage_token: newToken }).eq('id', r.id)
     setToken(newToken)
     setGeneratingToken(false)
   }
 
   async function revokeToken() {
     if (!confirm('Révoquer ce lien ? L\'élève ne pourra plus y accéder.')) return
-    await supabase.from('retroactions').update({ partage_token: null }).eq('id', r.id)
+    await supabase.from('retro_retroactions').update({ partage_token: null }).eq('id', r.id)
     setToken(null)
     setBoucle(null)
   }
@@ -266,7 +266,7 @@ function RetroDetail({ r, onClose, onUpdate }) {
 
   async function save() {
     setSaving(true)
-    await supabase.from('retroactions').update({ texte_final: texte }).eq('id', r.id)
+    await supabase.from('retro_retroactions').update({ texte_final: texte }).eq('id', r.id)
     await onUpdate()
     setEditing(false)
     setSaving(false)
@@ -274,7 +274,7 @@ function RetroDetail({ r, onClose, onUpdate }) {
 
   async function deleteRetro() {
     if (!confirm('Supprimer cette rétroaction ?')) return
-    await supabase.from('retroactions').delete().eq('id', r.id)
+    await supabase.from('retro_retroactions').delete().eq('id', r.id)
     onClose()
     onUpdate()
   }
@@ -430,7 +430,7 @@ function BulletinGenerator({ retroactions, profile }) {
   async function loadBulletinPrecedent() {
     if (!eleveCode) return
     const { data } = await supabase
-      .from('bulletins')
+      .from('retro_bulletins')
       .select('texte_final')
       .eq('eleve_code', eleveCode)
       .order('created_at', { ascending: false })
@@ -487,7 +487,7 @@ function BulletinGenerator({ retroactions, profile }) {
 
   async function saveBulletin() {
     setSaving(true)
-    const { error: err } = await supabase.from('bulletins').insert({
+    const { error: err } = await supabase.from('retro_bulletins').insert({
       eleve_code: eleveCode,
       periode,
       texte_final: bulletinTexte,
@@ -648,10 +648,10 @@ function VueEleve({ retroactions }) {
 
     const [{ data: bl }, { data: bu }, { data: di }] = await Promise.all([
       retrosIds.length
-        ? supabase.from('boucles').select('*').in('retroaction_id', retrosIds).order('created_at', { ascending: false })
+        ? supabase.from('retro_boucles').select('*').in('retroaction_id', retrosIds).order('created_at', { ascending: false })
         : Promise.resolve({ data: [] }),
-      supabase.from('bulletins').select('*').eq('eleve_code', c).order('created_at', { ascending: false }),
-      supabase.from('dialogues').select('*').eq('eleve_code', c).order('created_at', { ascending: false }),
+      supabase.from('retro_bulletins').select('*').eq('eleve_code', c).order('created_at', { ascending: false }),
+      supabase.from('retro_dialogues').select('*').eq('eleve_code', c).order('created_at', { ascending: false }),
     ])
     setBoucles(bl ?? [])
     setBulletins(bu ?? [])
@@ -700,8 +700,8 @@ function VueEleve({ retroactions }) {
           {[
             { label: 'Rétroactions', val: retrosEleve.length },
             { label: 'Boucles fermées', val: boucles.length },
-            { label: 'Bulletins', val: bulletins.length },
-            { label: 'Dialogues', val: dialogues.length },
+            { label: 'retro_bulletins', val: bulletins.length },
+            { label: 'retro_dialogues', val: dialogues.length },
           ].map(s => (
             <div key={s.label} className="card text-center py-3">
               <p className="text-2xl font-bold text-gray-800">{s.val}</p>

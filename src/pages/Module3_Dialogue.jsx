@@ -31,7 +31,7 @@ export default function Module3_Dialogue() {
   const [tab, setTab] = useState('fiche') // 'fiche' | 'saisie'
 
   useEffect(() => {
-    supabase.from('retroactions').select('id, eleve_code, texte_final, matiere, niveau, created_at')
+    supabase.from('retro_retroactions').select('id, eleve_code, texte_final, matiere, niveau, created_at')
       .order('created_at', { ascending: false }).limit(30)
       .then(({ data }) => setRetroactions(data ?? []))
   }, [])
@@ -39,13 +39,13 @@ export default function Module3_Dialogue() {
   async function save() {
     if (!selectedRetro) return
     setSaving(true)
-    await supabase.from('dialogues').insert({
+    await supabase.from('retro_dialogues').insert({
       retroaction_id: selectedRetro.id,
       eleve_code: selectedRetro.eleve_code,
       ...dialogue,
     })
     // Marque la rétroaction comme "suivi réalisé"
-    await supabase.from('retroactions').update({ suivi_realise: true }).eq('id', selectedRetro.id)
+    await supabase.from('retro_retroactions').update({ suivi_realise: true }).eq('id', selectedRetro.id)
     setSaved(true)
     setSaving(false)
   }

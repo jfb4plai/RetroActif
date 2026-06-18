@@ -17,8 +17,8 @@ export default function Dashboard() {
 
   async function loadData() {
     const [{ data: retros }, { data: bulletins }] = await Promise.all([
-      supabase.from('retroactions').select('*').order('created_at', { ascending: false }).limit(5),
-      supabase.from('bulletins').select('id').limit(50),
+      supabase.from('retro_retroactions').select('*').order('created_at', { ascending: false }).limit(5),
+      supabase.from('retro_bulletins').select('id').limit(50),
     ])
 
     const semaineDerniere = new Date()

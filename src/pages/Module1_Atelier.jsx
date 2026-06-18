@@ -163,7 +163,7 @@ export default function Module1_Atelier() {
   async function saveValide() {
     if (!retroText.trim()) { alert('Ajoutez le texte de votre rétroaction.'); return }
     setSaving(true)
-    await supabase.from('retroactions').insert({
+    await supabase.from('retro_retroactions').insert({
       ...ctx,
       texte_final: retroText,
       mode_construction: 'logigramme',

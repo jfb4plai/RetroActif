@@ -139,7 +139,7 @@ export default function Module4_Bibliotheque() {
   async function loadMesRetros() {
     setLoading(true)
     const { data } = await supabase
-      .from('retroactions')
+      .from('retro_retroactions')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(50)

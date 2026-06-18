@@ -28,7 +28,7 @@ export default function Module7_Pairs() {
   async function loadAssignments() {
     setLoading(true)
     const { data } = await supabase
-      .from('peer_feedbacks')
+      .from('retro_peer_feedbacks')
       .select('*')
       .order('created_at', { ascending: false })
     setAssignments(data ?? [])
@@ -160,7 +160,7 @@ function AssignmentDetail({ a, onClose, onRefresh }) {
 
   async function deleteAssignment() {
     if (!confirm('Supprimer cet assignment ?')) return
-    await supabase.from('peer_feedbacks').delete().eq('id', a.id)
+    await supabase.from('retro_peer_feedbacks').delete().eq('id', a.id)
     onClose()
     onRefresh()
   }
@@ -266,7 +266,7 @@ function FormulaireAssignment({ onCreated }) {
     setError('')
     setSaving(true)
 
-    const { error } = await supabase.from('peer_feedbacks').insert({
+    const { error } = await supabase.from('retro_peer_feedbacks').insert({
       eleve_donneur: donneur.trim(),
       eleve_receveur: receveur.trim(),
       description_travail: description.trim() || null,

@@ -62,8 +62,8 @@ export default function Module5_Progression() {
 
   async function loadData() {
     const [{ data: retros }, { data: evals }] = await Promise.all([
-      supabase.from('retroactions').select('*').order('created_at', { ascending: false }),
-      supabase.from('auto_evaluations').select('*').order('created_at', { ascending: false }).limit(10),
+      supabase.from('retro_retroactions').select('*').order('created_at', { ascending: false }),
+      supabase.from('retro_auto_evaluations').select('*').order('created_at', { ascending: false }).limit(10),
     ])
 
     // Calcul des stats depuis les rétroactions
@@ -106,7 +106,7 @@ export default function Module5_Progression() {
 
   async function saveEval() {
     setSaving(true)
-    await supabase.from('auto_evaluations').insert({ reponses })
+    await supabase.from('retro_auto_evaluations').insert({ reponses })
     setSaved(true)
     await loadData()
     setSaving(false)

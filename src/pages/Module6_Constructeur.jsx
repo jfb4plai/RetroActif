@@ -497,7 +497,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
       ? `${final}\n\n${personalNote}`
       : final
 
-    const { error: err } = await supabase.from('retroactions').insert({
+    const { error: err } = await supabase.from('retro_retroactions').insert({
       ...ctx,
       texte_genere: generated,
       texte_final,
@@ -857,7 +857,7 @@ function ModeIntermediaire({ profile, navigate, prefill }) {
 
   async function save() {
     setSaving(true)
-    const { error: err } = await supabase.from('retroactions').insert({
+    const { error: err } = await supabase.from('retro_retroactions').insert({
       ...ctx,
       texte_final,
       mode_construction: 'intermediaire',
@@ -1005,7 +1005,7 @@ function ModeExpert({ profile, navigate, prefill }) {
 
   async function save() {
     setSaving(true)
-    const { error: err } = await supabase.from('retroactions').insert({
+    const { error: err } = await supabase.from('retro_retroactions').insert({
       ...ctx,
       texte_final: ameliore || texte,
       texte_original: texte,
