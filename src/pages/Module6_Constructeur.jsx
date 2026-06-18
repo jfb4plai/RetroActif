@@ -116,6 +116,63 @@ export default function Module6_Constructeur() {
 }
 
 // ════════════════════════════════════════════════════════════
+// BANDEAU HANDOFF — affiché dans les 3 modes si prefill présent
+// ════════════════════════════════════════════════════════════
+function HandoffBanner({ prefill }) {
+  const [open, setOpen] = useState(false)
+  if (!prefill) return null
+  return (
+    <div className="rounded-xl border border-teal-300 bg-teal-50 overflow-hidden">
+      <div className="flex items-start gap-3 px-4 py-3">
+        <span className="text-teal-600 text-lg mt-0.5">🔗</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-teal-800">
+            Importé depuis CorpusActif
+          </p>
+          <p className="text-xs text-teal-700 mt-0.5">
+            Apprenant <strong>{prefill.eleve_code}</strong>
+            {prefill.space_name && <> — espace <strong>{prefill.space_name}</strong></>}
+            {prefill.matiere && <> · {prefill.matiere}</>}
+            {prefill.niveau && <> · {prefill.niveau}</>}
+          </p>
+          <p className="text-xs text-teal-600 mt-1 italic">
+            L'IA a analysé la conversation socratique de cet apprenant. Les champs ci-dessous sont pré-remplis — vérifiez et ajustez avant de générer.
+          </p>
+        </div>
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="shrink-0 text-xs text-teal-600 hover:text-teal-800 underline mt-0.5"
+        >
+          {open ? 'Masquer' : 'Voir le résumé'}
+        </button>
+      </div>
+      {open && (
+        <div className="border-t border-teal-200 px-4 py-3 space-y-2 bg-white">
+          {prefill.points_forts && (
+            <div>
+              <p className="text-xs font-semibold text-teal-700 uppercase tracking-wide mb-0.5">Points forts identifiés</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{prefill.points_forts}</p>
+            </div>
+          )}
+          {prefill.difficultes && (
+            <div>
+              <p className="text-xs font-semibold text-orange-600 uppercase tracking-wide mb-0.5">Difficultés repérées</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{prefill.difficultes}</p>
+            </div>
+          )}
+          {prefill.infos_complementaires && (
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-0.5">Synthèse</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{prefill.infos_complementaires}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ════════════════════════════════════════════════════════════
 // ÉCRAN ENTRY — choix du mode d'entrée
 // ════════════════════════════════════════════════════════════
 function ScreenEntry({ onManual, onCorpus }) {
@@ -465,13 +522,7 @@ function ModeDebutant({ profile, navigate, prefill }) {
 
   return (
     <div className="space-y-4">
-      {prefill && (
-        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
-          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
-          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
-          Vérifiez et ajustez avant de générer.
-        </div>
-      )}
+      <HandoffBanner prefill={prefill} />
       {/* Barre de progression */}
       <div className="card py-3 px-4">
         <div className="flex items-center justify-between">
@@ -818,13 +869,7 @@ function ModeIntermediaire({ profile, navigate, prefill }) {
 
   return (
     <div className="space-y-4">
-      {prefill && (
-        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
-          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
-          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
-          Vérifiez et ajustez avant de générer.
-        </div>
-      )}
+      <HandoffBanner prefill={prefill} />
       {/* Contexte rapide */}
       <div className="card space-y-3">
         <h2 className="font-semibold text-gray-800">Contexte</h2>
@@ -974,13 +1019,7 @@ function ModeExpert({ profile, navigate, prefill }) {
 
   return (
     <div className="space-y-4">
-      {prefill && (
-        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 text-sm text-teal-800 mb-2">
-          Données importées depuis CorpusActif — apprenant <strong>{prefill.eleve_code}</strong>
-          {prefill.space_name && <>, espace <strong>{prefill.space_name}</strong></>}.
-          Vérifiez et ajustez avant de générer.
-        </div>
-      )}
+      <HandoffBanner prefill={prefill} />
       <div className="grid grid-cols-2 gap-4">
         {/* Colonne gauche — saisie */}
         <div className="space-y-3">
