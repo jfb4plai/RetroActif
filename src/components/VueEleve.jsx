@@ -2,6 +2,30 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
+const STOP_WORDS = new Set([
+  'avec','dans','pour','cette','aussi','mais','donc','tout','plus','bien',
+  'très','être','avoir','peut','sont','nous','vous','leur','même','dont',
+  'lors','comme','sous','entre','vers','sans','après','elle','lui','ils',
+  'elles','pas','sur','par','les','des','une','que','qui','est','son','ses',
+  'plus','peu','trop','fait','doit','fait','dans','plus','lors','encore',
+])
+
+function computePatterns(retros) {
+  const freq = {}
+  retros.forEach(r => {
+    if (!r.difficultes) return
+    r.difficultes
+      .toLowerCase()
+      .split(/[\s,;.!?()]+/)
+      .filter(w => w.length >= 4 && !STOP_WORDS.has(w))
+      .forEach(w => { freq[w] = (freq[w] ?? 0) + 1 })
+  })
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([mot, n]) => ({ mot, n }))
+}
+
 export default function VueEleve({ retroactions }) {
   const fbaUrl = 'https://feed-back-adapt.vercel.app'
 
@@ -64,7 +88,10 @@ export default function VueEleve({ retroactions }) {
     setLoading(false)
   }
 
+  const navigate = useNavigate()
+
   const retrosEleve = retroactions.filter(r => r.eleve_code === code)
+  const patterns = computePatterns(retrosEleve)
 
   const timeline = [
     ...retrosEleve.map(r => ({ type: 'retro', date: r.created_at, data: r })),
@@ -173,6 +200,29 @@ export default function VueEleve({ retroactions }) {
           ))}
         </div>
       )}
+
+      {!loading && patterns.length > 0 && (
+        <div className="card border-l-4 border-jfb-rose space-y-2 py-3 px-4">
+          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Difficultés récurrentes</p>
+          <div className="flex flex-wrap gap-2">
+            {patterns.map(({ mot, n }) => (
+              <span key={mot} className="bg-red-50 text-red-700 text-xs px-3 py-1 rounded-full border border-red-200">
+                {mot} <span className="opacity-60">×{n}</span>
+              </span>
+            ))}
+          </div>
+          <p className="text-xs text-gray-400">Termes les plus fréquents dans les champs "difficultés" — analyse locale, non exhaustive.</p>
+        </div>
+      )}
+
+      <div className="flex justify-end">
+        <button
+          onClick={() => navigate(`/constructeur?eleve_code=${encodeURIComponent(code)}`)}
+          className="text-sm text-jfb-rose border border-jfb-rose rounded-lg px-4 py-2 hover:bg-jfb-beige transition-colors"
+        >
+          + Nouvelle rétroaction pour {code}
+        </button>
+      </div>
 
       {loading ? (
         <div className="space-y-2">{[1,2,3].map(i => <div key={i} className="card h-16 animate-pulse" />)}</div>
