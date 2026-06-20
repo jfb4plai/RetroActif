@@ -13,6 +13,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import VueEleve from '../components/VueEleve'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
@@ -222,6 +223,7 @@ function RetroDetail({ r, onClose, onUpdate }) {
   const [token, setToken] = useState(r.partage_token ?? null)
   const [generatingToken, setGeneratingToken] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [showQr, setShowQr] = useState(false)
   const [boucle, setBoucle] = useState(null)
   const [loadingBoucle, setLoadingBoucle] = useState(false)
 
@@ -359,9 +361,28 @@ function RetroDetail({ r, onClose, onUpdate }) {
               >
                 {copied ? '✓' : 'Copier'}
               </button>
+              <button
+                className="text-xs px-3 py-1.5 rounded-lg border btn-secondary"
+                onClick={() => setShowQr(v => !v)}
+              >
+                QR
+              </button>
             </div>
+
+            {showQr && (
+              <div className="flex justify-center py-3">
+                <QRCodeSVG
+                  value={shareUrl}
+                  size={160}
+                  bgColor="#faf9f7"
+                  fgColor="#1a1a1a"
+                  level="M"
+                />
+              </div>
+            )}
+
             <p className="text-xs text-gray-400">
-              Partage ce lien à l'élève — il peut lire la rétroaction et répondre sans connexion.
+              Partage ce lien ou ce QR à l'élève — il peut lire la rétroaction et répondre sans connexion.
             </p>
             <button
               className="text-xs text-red-400 hover:underline"
