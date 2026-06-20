@@ -14,10 +14,36 @@ export default function VueEleve({ retroactions }) {
   const [bulletins, setBulletins] = useState([])
   const [dialogues, setDialogues] = useState([])
   const [loading, setLoading] = useState(false)
+  const [mode, setMode] = useState('liste') // 'liste' | 'detail'
+  const [bouclesEnAttente, setBouclesEnAttente] = useState(new Set())
 
   useEffect(() => {
     if (code) load(code)
   }, [code])
+
+  useEffect(() => {
+    loadBouclesEnAttente()
+  }, [retroactions])
+
+  async function loadBouclesEnAttente() {
+    const avecToken = retroactions.filter(r => r.partage_token)
+    if (avecToken.length === 0) return
+
+    const ids = avecToken.map(r => r.id)
+    const { data } = await supabase
+      .from('retro_boucles')
+      .select('retroaction_id')
+      .in('retroaction_id', ids)
+
+    const fermeesIds = new Set((data ?? []).map(b => b.retroaction_id))
+    const enAttente = new Set(
+      avecToken
+        .filter(r => !fermeesIds.has(r.id))
+        .map(r => r.eleve_code)
+        .filter(Boolean)
+    )
+    setBouclesEnAttente(enAttente)
+  }
 
   async function load(c) {
     setLoading(true)
@@ -47,6 +73,18 @@ export default function VueEleve({ retroactions }) {
     ...dialogues.map(d => ({ type: 'dialogue', date: d.created_at, data: d })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date))
 
+  const elevesListe = codes.map(c => {
+    const retros = retroactions.filter(r => r.eleve_code === c)
+    const derniere = retros[0]
+    return {
+      code: c,
+      nbRetros: retros.length,
+      derniereDate: derniere?.created_at,
+      derniereMatiere: derniere?.matiere,
+      enAttente: bouclesEnAttente.has(c),
+    }
+  })
+
   if (codes.length === 0) {
     return (
       <div className="card text-center py-12">
@@ -55,8 +93,54 @@ export default function VueEleve({ retroactions }) {
     )
   }
 
+  if (mode === 'liste') {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-gray-500">{codes.length} élève{codes.length > 1 ? 's' : ''} avec rétroactions sauvegardées</p>
+        <div className="grid grid-cols-1 gap-2">
+          {elevesListe.map(e => (
+            <button
+              key={e.code}
+              onClick={() => { setCode(e.code); setMode('detail') }}
+              className="card py-3 px-4 text-left hover:shadow-md transition-all cursor-pointer flex items-center gap-4"
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-gray-800">{e.code}</span>
+                  {e.enAttente && (
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
+                      Boucle en attente
+                    </span>
+                  )}
+                  {e.derniereMatiere && (
+                    <span className="badge bg-blue-50 text-blue-700">{e.derniereMatiere}</span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {e.nbRetros} rétroaction{e.nbRetros > 1 ? 's' : ''} —
+                  dernière le {e.derniereDate
+                    ? new Date(e.derniereDate).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : '—'}
+                </p>
+              </div>
+              <span className="text-gray-300 text-lg">›</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  // mode === 'detail': existing view, wrapped with back button
   return (
     <div className="space-y-4">
+      <button
+        onClick={() => setMode('liste')}
+        className="text-sm text-jfb-rose hover:underline flex items-center gap-1"
+      >
+        ← Tous les élèves
+      </button>
+
       <div className="flex items-center gap-3">
         <label className="text-sm font-medium text-gray-700">Code élève :</label>
         <select className="input text-sm w-40" value={code} onChange={e => setCode(e.target.value)}>
