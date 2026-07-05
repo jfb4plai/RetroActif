@@ -95,7 +95,7 @@ export default function PeerPage() {
 
         {/* En-tête PLAI */}
         <div className="flex items-center gap-3 mb-8">
-          <img src="/plai-logo.jpg" alt="PLAI" className="h-10 w-10 rounded-xl object-cover" />
+          <img src="/plai-logo.jpg" alt="PLAI" className="h-10 w-auto rounded-xl object-contain" />
           <div>
             <p className="text-xs font-semibold text-jfb-rose uppercase tracking-wide">RetroActif — Feedback entre pairs</p>
             <p className="text-xs text-gray-500">Pôle Liégeois d'Accompagnement vers une École Inclusive</p>
